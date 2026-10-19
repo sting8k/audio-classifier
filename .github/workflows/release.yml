@@ -84,10 +84,23 @@ jobs:
         with:
           path: dist
           merge-multiple: true
-      - name: Create prerelease
+      - name: Create release (dev-* tags are prereleases)
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          pre=""; title="$TAG"
+          case "$TAG" in dev-*) pre="--prerelease"; title="$TAG (dev build)" ;; esac
+          cat > notes.md <<'EOF'
+          Unzip and run; ffmpeg, onnxruntime and the models are bundled, no internet needed.
+
+          - **macOS (Apple Silicon)**: the app is not signed. Once, run `xattr -cr "Audio Language Classifier.app"`, then open it.
+          - **Windows (64-bit)**: keep the `third_party` folder next to `AudioLangClassifier.exe`. Needs the WebView2 runtime (built into Windows 11).
+          - **Linux (x86-64)**: needs `libwebkit2gtk-4.1`.
+
+          Bundled third-party software (licence texts in `third_party/<platform>/licenses`):
+          onnxruntime 1.29.0 (MIT), Silero VAD v6.2.3 (MIT), SpeechBrain ECAPA VoxLingua107 ONNX (Apache-2.0),
+          ffmpeg 9.0.2: LGPL v3 build on Windows/Linux, GPL v3 build on macOS.
+          ffmpeg source: https://ffmpeg.org/releases/ffmpeg-9.0.2.tar.xz
+          EOF
           gh release create "$TAG" dist/* --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
-            --prerelease --title "$TAG (dev build)" \
-            --notes "Dev build, untested on Windows/macOS. macOS: unsigned, run \`xattr -cr \"Audio Language Classifier.app\"\` once (SPEC D-9). Windows needs the WebView2 runtime (built into Windows 11)."
+            $pre --title "$title" --notes-file notes.md
