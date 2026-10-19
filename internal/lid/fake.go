@@ -52,3 +52,8 @@ func (f Fake) Detect(ctx context.Context, path string) (Detection, error) {
 }
 
 func (Fake) Close() error { return nil }
+
+func (f Fake) Duration(ctx context.Context, path string) (float64, error) {
+	d, err := f.Detect(ctx, path)
+	return d.DurationS, err
+}

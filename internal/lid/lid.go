@@ -32,6 +32,12 @@ type Detector interface {
 	Close() error
 }
 
+// Prober reads a clip's full duration without decoding it (screen-1 totals,
+// ClipResult.DurationS). Implemented by the engine; safe for concurrent use.
+type Prober interface {
+	Duration(ctx context.Context, path string) (float64, error)
+}
+
 // Status of one clip result (SPEC "Statuses").
 type Status string
 
