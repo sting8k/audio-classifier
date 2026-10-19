@@ -66,7 +66,7 @@ func str(s string) any {
 // The file is replaced atomically: a failed export leaves the old one intact.
 func Write(req lid.ExportRequest, rows []lid.ClipResult, o Options) error {
 	if req.Format != "json" && req.Format != "csv" {
-		return fmt.Errorf("định dạng không hỗ trợ: %q", req.Format)
+		return fmt.Errorf("unsupported format %q", req.Format)
 	}
 	cols, err := selectColumns(req.Fields)
 	if err != nil {
@@ -74,10 +74,10 @@ func Write(req lid.ExportRequest, rows []lid.ClipResult, o Options) error {
 	}
 	rows = selectRows(rows, req.Paths)
 	if len(rows) == 0 {
-		return errors.New("không có clip nào để xuất")
+		return errors.New("no clips to export")
 	}
 	if req.Out == "" {
-		return errors.New("chưa chọn nơi lưu file")
+		return errors.New("no output file chosen")
 	}
 	if o.Now.IsZero() {
 		o.Now = time.Now()
@@ -111,7 +111,7 @@ func selectColumns(want []string) ([]column, error) {
 		}
 	}
 	for f := range left {
-		return nil, fmt.Errorf("trường không hỗ trợ: %q", f)
+		return nil, fmt.Errorf("unknown field %q", f)
 	}
 	return out, nil
 }

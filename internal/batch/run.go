@@ -23,7 +23,7 @@ const recentMax = 5
 // until the engine's workers/threads measurement says otherwise: retune here.
 func autoWorkers() int { return max(1, runtime.NumCPU()/2) }
 
-var errBusy = errors.New("đang có một lần nhận diện chạy")
+var errBusy = errors.New("a run is already in progress")
 
 // Config wires a Runner to its engine and to the UI.
 type Config struct {

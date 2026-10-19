@@ -33,7 +33,7 @@ func ScanFolder(root string, s lid.Settings) Folder {
 		f.Err = err.Error()
 		return f
 	case !st.IsDir():
-		f.Err = "không phải thư mục"
+		f.Err = "not a folder"
 		return f
 	}
 	want := make(map[string]bool, len(s.Extensions))
@@ -46,7 +46,7 @@ func ScanFolder(root string, s lid.Settings) Folder {
 		}
 		if err != nil {
 			if f.Err == "" {
-				f.Err = "không đọc được một phần thư mục: " + err.Error()
+				f.Err = "some sub-folders could not be read: " + err.Error()
 			}
 			if d != nil && d.IsDir() {
 				return fs.SkipDir
@@ -98,4 +98,4 @@ func (f Folder) Summary() lid.FolderSummary {
 // abs joins a Files entry back onto the folder path.
 func (f Folder) abs(rel string) string { return filepath.Join(f.Path, filepath.FromSlash(rel)) }
 
-var errNoClips = errors.New("không có clip nào để xử lý")
+var errNoClips = errors.New("no clips to process")

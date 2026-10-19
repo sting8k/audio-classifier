@@ -13,11 +13,11 @@ import (
 func File(path string) error {
 	// Absolute also keeps a path from being read as an option by `open`.
 	if !filepath.IsAbs(path) {
-		return fmt.Errorf("đường dẫn không hợp lệ: %q", path)
+		return fmt.Errorf("path must be absolute: %q", path)
 	}
 	path = filepath.Clean(path)
 	if _, err := os.Stat(path); err != nil {
-		return fmt.Errorf("không tìm thấy file: %w", err)
+		return fmt.Errorf("file not found: %w", err)
 	}
 	return open(path)
 }

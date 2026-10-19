@@ -50,7 +50,7 @@ func (a *App) DefaultSettings() lid.Settings {
 
 // PickFolder opens the native folder picker; "" if the user cancels.
 func (a *App) PickFolder() (string, error) {
-	return runtime.OpenDirectoryDialog(a.ctx, runtime.OpenDialogOptions{Title: "Chọn thư mục"})
+	return runtime.OpenDirectoryDialog(a.ctx, runtime.OpenDialogOptions{Title: "Choose a folder"})
 }
 
 // ScanFolders counts matching clips in each folder (screen 1 table) and returns
@@ -88,7 +88,7 @@ func (a *App) Results() []lid.ClipResult { return a.runner.Results() }
 
 // PickExportPath opens the native save dialog; "" if the user cancels.
 func (a *App) PickExportPath(defaultName string) (string, error) {
-	return runtime.SaveFileDialog(a.ctx, runtime.SaveDialogOptions{Title: "Lưu kết quả", DefaultFilename: defaultName})
+	return runtime.SaveFileDialog(a.ctx, runtime.SaveDialogOptions{Title: "Save results", DefaultFilename: defaultName})
 }
 
 // Export writes the selected results as JSON or CSV to req.Out.
