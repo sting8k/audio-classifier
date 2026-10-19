@@ -305,11 +305,19 @@ func (r *run) process(j job) (res lid.ClipResult) {
 			res.SecondLanguage, res.SecondConfidence = det.Top[1].Lang, &second
 		}
 		res.Status = lid.StatusReview
-		if conf >= r.settings.MinConfidence {
+		if margin := conf - secondProb(det.Top); margin >= r.settings.MinMargin {
 			res.Status = lid.StatusOK
 		}
 	}
 	return res
+}
+
+// secondProb is the runner-up's probability, 0 when the engine gave only one class.
+func secondProb(top []lid.LangProb) float64 {
+	if len(top) > 1 {
+		return top[1].Prob
+	}
+	return 0
 }
 
 func (r *run) record(i int, res lid.ClipResult) {

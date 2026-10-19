@@ -16,10 +16,11 @@ func AssetsIn(dir string) Config {
 		lib = "libonnxruntime.1.23.2.dylib"
 	}
 	return Config{
-		FFmpeg:  filepath.Join(dir, "ffmpeg", "bin", "ffmpeg"+exe),
-		ORTLib:  filepath.Join(dir, "onnxruntime", lib),
-		ECAPA:   filepath.Join(dir, "models", "voxlingua107.onnx"),
-		LangMap: filepath.Join(dir, "models", "lang_map.json"),
-		VAD:     filepath.Join(dir, "models", "silero_vad.onnx"),
+		FFmpeg:     filepath.Join(dir, "ffmpeg", "bin", "ffmpeg"+exe),
+		ORTLib:     filepath.Join(dir, "onnxruntime", lib),
+		Model:      filepath.Join(dir, "models", "ear.onnx"),
+		Languages:  filepath.Join(dir, "models", "languages.json"),
+		MelFilters: filepath.Join(dir, "models", "mel_filters.f32"),
+		VAD:        filepath.Join(dir, "models", "silero_vad.onnx"),
 	}
 }

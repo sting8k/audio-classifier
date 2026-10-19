@@ -177,7 +177,7 @@ func TestClosingOneEngineKeepsOthersAlive(t *testing.T) {
 	}
 }
 
-// Many goroutines share one Engine (one ECAPA session, one VAD session) under -race, and the
+// Many goroutines share one Engine (one model session, one VAD session) under -race, and the
 // answers do not depend on who ran concurrently. Noise goes through the model directly
 // (the VAD would drop it); real clips go through Detect when ENGINE_TEST_CLIPS is set.
 func TestConcurrentUseGivesSameAnswers(t *testing.T) {
@@ -206,7 +206,8 @@ func TestConcurrentUseGivesSameAnswers(t *testing.T) {
 }
 
 // Real speech: top-1 must be right and probabilities close to the Python reference
-// (same ONNX files; with the same decoded PCM Python gives id .9968, pt 1.0000, ar .9521).
+// (same ear.onnx and the reference numpy log-mel on the PCM this engine kept after VAD:
+// id .9913, pt 1.0000, ar .8847).
 func TestReferenceClips(t *testing.T) {
 	dir := os.Getenv("ENGINE_TEST_CLIPS")
 	if dir == "" {
@@ -216,7 +217,7 @@ func TestReferenceClips(t *testing.T) {
 	ref := []struct {
 		glob, lang string
 		prob       float64
-	}{{"Live Earth*", "id", .9968}, {"PT*", "pt", 1.0}, {"arabic 5*", "ar", .9521}}
+	}{{"Live Earth*", "id", .9913}, {"PT*", "pt", 1.0}, {"arabic 5*", "ar", .8847}}
 	for _, r := range ref {
 		files, _ := filepath.Glob(filepath.Join(dir, r.glob))
 		if len(files) != 1 {

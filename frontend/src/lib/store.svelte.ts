@@ -19,7 +19,7 @@ export const nav = $state({ screen: 'folders' as Screen })
 export const input = $state({
   ready: false,
   offered: [] as string[], // extensions offered as checkboxes
-  settings: { extensions: [], recursive: false, min_confidence: 0.6, workers: 0 } as lid.Settings,
+  settings: { extensions: [], recursive: false, min_margin: 0.25, workers: 0 } as lid.Settings,
   paths: [] as string[], // folders as added
   folders: [] as lid.FolderSummary[], // last ScanFolders answer, same order as paths
   totals: {} as Record<string, { clips: number; seconds: number }>, // folder_totals events by path; valid while clips match the row
@@ -30,7 +30,7 @@ export const input = $state({
 /** Screen 2: the latest progress snapshot. */
 export const run = $state({
   progress: null as ProgressData | null,
-  minConfidence: 0.6, // threshold the run was started with
+  minMargin: 0.25, // review margin the run was started with
   busy: false, // a pause/resume/cancel call is in flight
   error: '',
 })
@@ -159,7 +159,7 @@ export async function start(): Promise<string> {
   const folders = runnable().map((f) => f.path)
   const before = run.progress
   run.error = ''
-  run.minConfidence = input.settings.min_confidence
+  run.minMargin = input.settings.min_margin
   run.progress = { state: 'running', done: 0, total: plan().clips, elapsed_s: 0, current: '', folders: [], recent: [], summary: { total: 0, ok: 0, review: 0, no_speech: 0, error: 0 } }
   try {
     await api.Start(folders, $state.snapshot(input.settings))

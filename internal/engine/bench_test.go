@@ -7,7 +7,7 @@ package engine
 // Optional: ENGINE_BENCH_COPIES (default 10 -> 30 clips), ENGINE_BENCH_REPS (3),
 // ENGINE_BENCH_WORKERS ("1,2,3,4,6"), ENGINE_BENCH_THREADS ("1,2,3,6"), ENGINE_BENCH_MODES ("shared,perworker").
 //
-// "shared": one Engine (one ECAPA session, one VAD session) used by W goroutines.
+// "shared": one Engine (one model session, one VAD session) used by W goroutines.
 // "perworker": W Engines, goroutine i owns Engine i (its own sessions, each with T threads).
 // Linux only: peak RSS is read from /proc after resetting the high-water mark.
 

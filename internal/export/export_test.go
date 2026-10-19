@@ -32,7 +32,7 @@ func rows() []lid.ClipResult {
 func export(t *testing.T, req lid.ExportRequest, rs []lid.ClipResult) []byte {
 	t.Helper()
 	req.Out = filepath.Join(t.TempDir(), "out")
-	if err := Write(req, rs, Options{MinConfidence: 0.6, Now: time.Date(2026, 10, 19, 12, 10, 31, 0, time.FixedZone("", 7*3600))}); err != nil {
+	if err := Write(req, rs, Options{MinMargin: 0.25, Now: time.Date(2026, 10, 19, 12, 10, 31, 0, time.FixedZone("", 7*3600))}); err != nil {
 		t.Fatal(err)
 	}
 	b, err := os.ReadFile(req.Out)
@@ -129,8 +129,8 @@ func TestJSONRoundTrip(t *testing.T) {
 		GeneratedAt string `json:"generated_at"`
 		Model       string `json:"model"`
 		Settings    struct {
-			MaxSeconds    int     `json:"max_seconds"`
-			MinConfidence float64 `json:"min_confidence"`
+			MaxSeconds int     `json:"max_seconds"`
+			MinMargin  float64 `json:"min_margin"`
 		} `json:"settings"`
 		Summary lid.Summary      `json:"summary"`
 		Clips   []lid.ClipResult `json:"clips"`
@@ -138,7 +138,7 @@ func TestJSONRoundTrip(t *testing.T) {
 	if err := json.Unmarshal(b, &doc); err != nil {
 		t.Fatalf("not valid JSON: %v", err)
 	}
-	if doc.GeneratedAt != "2026-10-19T12:10:31+07:00" || doc.Model == "" || doc.Settings.MaxSeconds != lid.MaxSeconds || doc.Settings.MinConfidence != 0.6 {
+	if doc.GeneratedAt != "2026-10-19T12:10:31+07:00" || doc.Model == "" || doc.Settings.MaxSeconds != lid.MaxSeconds || doc.Settings.MinMargin != 0.25 {
 		t.Errorf("header = %+v", doc)
 	}
 	if want := (lid.Summary{Total: 4, OK: 1, Review: 1, NoSpeech: 1, Error: 1}); doc.Summary != want {

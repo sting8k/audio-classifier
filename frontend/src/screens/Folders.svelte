@@ -8,7 +8,7 @@
 
   const total = $derived(plan())
   const validFolders = $derived(runnable().length)
-  const thresholdOk = $derived(input.settings.min_confidence >= 0 && input.settings.min_confidence <= 1)
+  const thresholdOk = $derived(input.settings.min_margin >= 0 && input.settings.min_margin <= 1)
   const reason = $derived(
     isActive()
       ? 'A run is in progress — see step 2.'
@@ -17,7 +17,7 @@
         : input.settings.extensions.length === 0
           ? 'Select at least one file format.'
           : !thresholdOk
-            ? 'The confidence threshold must be between 0 and 1.'
+            ? 'The review margin must be between 0 and 1.'
             : input.scanning
               ? 'Scanning…'
               : total.clips === 0
@@ -114,9 +114,9 @@
     <label class="check strong-label"><input type="checkbox" bind:checked={input.settings.recursive} onchange={rescanSoon} />Include subfolders</label>
 
     <div class="field">
-      <label for="conf">Confidence threshold</label>
-      <input id="conf" class="input mono" type="number" min="0" max="1" step="0.05" bind:value={input.settings.min_confidence} aria-invalid={!thresholdOk} aria-describedby="conf-hint" />
-      <p id="conf-hint" class="small muted">Clips below the threshold are marked “Needs review”. The 0.60 default is a guess, not measured on real data.</p>
+      <label for="conf">Review margin</label>
+      <input id="conf" class="input mono" type="number" min="0" max="1" step="0.05" bind:value={input.settings.min_margin} aria-invalid={!thresholdOk} aria-describedby="conf-hint" />
+      <p id="conf-hint" class="small muted">A clip is marked “Needs review” when its top language beats the 2nd choice by less than this (confidence minus 2nd-choice confidence).</p>
     </div>
 
     <div class="go">

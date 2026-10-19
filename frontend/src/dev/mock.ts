@@ -166,7 +166,7 @@ function tick() {
 }
 
 const App = {
-  DefaultSettings: async (): Promise<lid.Settings> => ({ extensions: [...ALL_EXT], recursive: false, min_confidence: 0.6, workers: 0 }) as lid.Settings,
+  DefaultSettings: async (): Promise<lid.Settings> => ({ extensions: [...ALL_EXT], recursive: false, min_margin: 0.25, workers: 0 }) as lid.Settings,
 
   PickFolder: async () => PICKS[state.pickIdx++ % PICKS.length],
   PickFiles: async () => ['/Users/demo/Downloads/clip 1.mp3', '/Users/demo/Downloads/clip 2.mp4'],

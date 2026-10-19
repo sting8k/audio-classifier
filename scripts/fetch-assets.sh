@@ -10,7 +10,7 @@
 # Layout written (must match engine.AssetsIn):
 #   ffmpeg/bin/ffmpeg[.exe] ffprobe[.exe]   (+ ffmpeg/lib/*.so.N on linux, *.dll beside the exe on windows)
 #   onnxruntime/<shared lib>
-#   models/voxlingua107.onnx lang_map.json silero_vad.onnx
+#   models/ear.onnx languages.json mel_filters.f32 silero_vad.onnx
 #   licenses/                               (texts that ship in the archives + model notices)
 #
 # What is bundled and under which licence:
@@ -22,7 +22,11 @@
 #                             libs. darwin-*: martin-riedl.de static build, **GPL v3** (no LGPL
 #                             prebuilt for macOS arm64 exists; D-9 makes macOS internal-only).
 #                             ffmpeg runs as a separate process, our code is not linked to it.
-#   Silero VAD v6.2.3         MIT.   ECAPA VoxLingua107 ONNX: Apache-2.0.
+#   Silero VAD v6.2.3         MIT.
+#   Ear 0.2.1 (Desert Ant Labs) Desert Ant Labs Source-Available License 1.0
+#                             (https://license.desertant.com/1.0). ear.onnx is our conversion of
+#                             their ear.tflite (scripts/ear-onnx), hosted on this repo's release
+#                             "model-ear-0.2.1-onnx"; languages.json and mel_filters.f32 come from HF.
 #
 # BtbN deletes old autobuild tags after a while: when the URL below 404s, mirror the pinned
 # archive to our GitHub Release (sha256 stays the same) or bump the pin.
@@ -47,11 +51,14 @@ MR_URL_AMD64=https://ffmpeg.martin-riedl.de/download/macos/amd64/1789931006_9.0.
 FFMPEG_DARWIN_AMD64_SHA=7c6b4125b191cbf773832dc51f424cf2b6bb7da43007d1e066f95909e47cacd4
 FFPROBE_DARWIN_AMD64_SHA=2322438ed2f6319a691291b247d09c69dcaa3a982460d1f269a7e1af335cfdfd
 
-HF_REV=e02e1da805ae49635fe1aa7913c3f1e7f5f5fde6   # christopherthompson81/voxlingua107-lid-onnx
-HF_URL=https://huggingface.co/christopherthompson81/voxlingua107-lid-onnx/resolve/$HF_REV
-ECAPA_SHA=e2c3c3da39b99e3f9196d15fceef6a65f702320038bbc08813a4f21280255ce8
-LANGMAP_SHA=d593825e7e8ce82c8b50c0810a371a3e69cd0293b52751ddf515f6ee2c592182
-ECAPA_README_SHA=71b97e47d91ffc47c0010c95b7dfa5d52bbae23214aa6bb9c45d175d0bf0d0dc
+EAR_REV=aca9062c7e27f290306df0d65cd781d8047e07b1   # desert-ant-labs/ear
+EAR_HF_URL=https://huggingface.co/desert-ant-labs/ear/resolve/$EAR_REV
+EAR_ONNX_URL=https://github.com/sting8k/audio-classifier/releases/download/model-ear-0.2.1-onnx/ear.onnx
+EAR_ONNX_SHA=fe06d8463eb676eedd85971b97fb125e4618d0ff435249227a29e46d22fca0ef
+EAR_LANGS_SHA=0a08f30dec26ad25730a1fa9375a5d693f5a159032d0cd7818007b7dbc3eae18
+EAR_MEL_SHA=a3099fcba1a7f30f229b230011146ea0140db8de4f467b44aaa5de70bcc0f325
+EAR_README_SHA=4761ee93c86f9fe3f2ac063d17880df905475b96d58e9185a8c4da2f0430aed3
+EAR_NOTICES_SHA=8c38118a9fc36d09fe5beb3af06298138b43ff70cb7e129c0263d7a9bf996fd2
 SILERO_REV=5cd7945676eb32225748052e2e6a0580e4686a08   # snakers4/silero-vad tag v6.2.3
 SILERO_URL=https://raw.githubusercontent.com/snakers4/silero-vad/$SILERO_REV
 SILERO_SHA=1a153a22f4509e292a94e67d6f9b85e8deb25b4988682b7e174c65279d8788e3
@@ -96,10 +103,12 @@ fetch_to() { # url sha dest_file
 
 fetch_models() { # dest
   mkdir -p "$1/models" "$1/licenses"
-  fetch_to "$HF_URL/voxlingua107.onnx" $ECAPA_SHA "$1/models/voxlingua107.onnx"
-  fetch_to "$HF_URL/lang_map.json" $LANGMAP_SHA "$1/models/lang_map.json"
+  fetch_to "$EAR_ONNX_URL" $EAR_ONNX_SHA "$1/models/ear.onnx"
+  fetch_to "$EAR_HF_URL/languages.json" $EAR_LANGS_SHA "$1/models/languages.json"
+  fetch_to "$EAR_HF_URL/mel_filters.f32" $EAR_MEL_SHA "$1/models/mel_filters.f32"
   fetch_to "$SILERO_URL/src/silero_vad/data/silero_vad.onnx" $SILERO_SHA "$1/models/silero_vad.onnx"
-  fetch_to "$HF_URL/README.md" $ECAPA_README_SHA "$1/licenses/voxlingua107-README.md"   # carries license: apache-2.0
+  fetch_to "$EAR_HF_URL/README.md" $EAR_README_SHA "$1/licenses/ear-README.md"   # licence section + link
+  fetch_to "$EAR_HF_URL/THIRD_PARTY_NOTICES.md" $EAR_NOTICES_SHA "$1/licenses/ear-THIRD_PARTY_NOTICES.md"
   fetch_to "$SILERO_URL/LICENSE" $SILERO_LICENSE_SHA "$1/licenses/silero-vad-LICENSE"
 }
 

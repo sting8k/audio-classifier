@@ -45,7 +45,7 @@ func (a *App) shutdown(context.Context) {
 
 // DefaultSettings returns the initial screen-1 settings.
 func (a *App) DefaultSettings() lid.Settings {
-	return lid.Settings{Extensions: lid.DefaultExtensions, MinConfidence: lid.DefaultMinConfidence}
+	return lid.Settings{Extensions: lid.DefaultExtensions, MinMargin: lid.DefaultMinMargin}
 }
 
 // PickFolder opens the native folder picker; "" if the user cancels.
@@ -108,7 +108,7 @@ func (a *App) PickExportPath(defaultName string) (string, error) {
 
 // Export writes the selected results as JSON or CSV to req.Out.
 func (a *App) Export(req lid.ExportRequest) error {
-	return export.Write(req, a.runner.Results(), export.Options{MinConfidence: a.runner.Settings().MinConfidence})
+	return export.Write(req, a.runner.Results(), export.Options{MinMargin: a.runner.Settings().MinMargin})
 }
 
 // OpenFileLocation reveals the file in Finder / Explorer (on Linux, opens its folder).

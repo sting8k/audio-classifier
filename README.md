@@ -25,9 +25,9 @@ Unzip and run. No installation is needed.
 
 1. **Input**: drag in folders or files (mp3, wav, m4a, aac, flac, ogg, mp4, mov).
 2. **Detection**: the app reads the first 30 seconds of each clip, keeps only the parts with speech, and
-   picks the most likely language out of 107. You can pause or cancel at any time.
+   picks the most likely language out of 103. You can pause or cancel at any time.
 3. **Results**: each clip gets a language code (`en`, `vi`, `pt`…), a confidence score and a second choice.
-   - **Needs review**: the confidence is below the threshold (0.60 by default, which is a guess, not a measured value).
+   - **Needs review**: the top language does not beat the second choice by at least the review margin (0.25 by default).
    - **No speech**: the clip has less than about 3 seconds of speech.
 4. **Export**: CSV or JSON. "CSV for Excel" uses `;` as the separator, so it opens correctly in Excel set to
    a region that writes decimals with a comma.
@@ -50,4 +50,5 @@ Design and decisions: [docs/SPEC.md](docs/SPEC.md).
 
 MIT, see [LICENSE](LICENSE). The bundled third-party components keep their own licences, see
 `third_party/<platform>/licenses`: onnxruntime (MIT), Silero VAD (MIT),
-SpeechBrain ECAPA VoxLingua107 (Apache-2.0), and ffmpeg (LGPL v3 on Windows/Linux, GPL v3 on macOS).
+the Ear language model by Desert Ant Labs ([Desert Ant Labs Source-Available License 1.0](https://license.desertant.com/1.0)),
+and ffmpeg (LGPL v3 on Windows/Linux, GPL v3 on macOS).

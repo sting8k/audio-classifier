@@ -99,7 +99,8 @@ jobs:
           - **Linux (x86-64)**: needs `libwebkit2gtk-4.1`.
 
           Bundled third-party software (licence texts in `third_party/<platform>/licenses`):
-          onnxruntime 1.29.0 (MIT), Silero VAD v6.2.3 (MIT), SpeechBrain ECAPA VoxLingua107 ONNX (Apache-2.0),
+          onnxruntime 1.23.2 (MIT), Silero VAD v6.2.3 (MIT),
+          Ear 0.2.1 by Desert Ant Labs (Desert Ant Labs Source-Available License 1.0, https://license.desertant.com/1.0),
           ffmpeg 9.0.2: LGPL v3 build on Windows/Linux, GPL v3 build on macOS.
           ffmpeg source: https://ffmpeg.org/releases/ffmpeg-9.0.2.tar.xz
           EOF

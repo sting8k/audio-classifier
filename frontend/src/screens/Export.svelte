@@ -16,7 +16,7 @@
   const defaultName = $derived(`language-results_${today}.${exp.format}`)
   const preview = $derived(
     exp.format === 'json'
-      ? jsonPreview(clips.slice(0, 3), fields, clips.length, run.minConfidence, countBy(clips))
+      ? jsonPreview(clips.slice(0, 3), fields, clips.length, run.minMargin, countBy(clips))
       : csvPreview(clips.slice(0, 6), fields, exp.bom),
   )
   const blocked = $derived(

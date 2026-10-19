@@ -11,25 +11,27 @@ import (
 	"github.com/sting8k/audio-classifier/internal/lid"
 )
 
-// Statuses come from the user's MinConfidence, inclusive at the boundary.
-func TestStatusFollowsThreshold(t *testing.T) {
+// Statuses come from the user's MinMargin (top-1 minus top-2), inclusive at the boundary;
+// a high top-1 with a close runner-up still needs review.
+func TestStatusFollowsMargin(t *testing.T) {
 	root := t.TempDir()
-	touch(t, root, "high.mp3", "edge.mp3", "low.mp3")
-	probs := map[string]float64{"high.mp3": 0.65, "edge.mp3": 0.60, "low.mp3": 0.5999}
+	touch(t, root, "clear.mp3", "edge.mp3", "close.mp3")
+	top := map[string][2]float64{"clear.mp3": {0.80, 0.10}, "edge.mp3": {0.75, 0.50}, "close.mp3": {0.55, 0.45}}
 	det := detFunc(func(_ context.Context, p string) (lid.Detection, error) {
-		return speech("vi", probs[filepath.Base(p)]), nil
+		pr := top[filepath.Base(p)]
+		return lid.Detection{DurationS: 10, SpeechS: 8, Top: []lid.LangProb{{Lang: "vi", Prob: pr[0]}, {Lang: "en", Prob: pr[1]}}}, nil
 	})
 
 	for _, tc := range []struct {
 		min  float64
 		want map[string]lid.Status
 	}{
-		{0.60, map[string]lid.Status{"high.mp3": lid.StatusOK, "edge.mp3": lid.StatusOK, "low.mp3": lid.StatusReview}},
-		{0.70, map[string]lid.Status{"high.mp3": lid.StatusReview, "edge.mp3": lid.StatusReview, "low.mp3": lid.StatusReview}},
+		{0.25, map[string]lid.Status{"clear.mp3": lid.StatusOK, "edge.mp3": lid.StatusOK, "close.mp3": lid.StatusReview}},
+		{0.50, map[string]lid.Status{"clear.mp3": lid.StatusOK, "edge.mp3": lid.StatusReview, "close.mp3": lid.StatusReview}},
 	} {
 		r := NewRunner(Config{Detector: det})
 		s := mp3
-		s.MinConfidence = tc.min
+		s.MinMargin = tc.min
 		if err := r.Start([]string{root}, s); err != nil {
 			t.Fatal(err)
 		}

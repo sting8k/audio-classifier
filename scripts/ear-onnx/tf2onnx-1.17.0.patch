@@ -1,0 +1,69 @@
+--- a/tf2onnx/graph_matcher.py
++++ b/tf2onnx/graph_matcher.py
+@@ -155,6 +155,8 @@
+         if pattern.op_type == "*":
+             return True
+ 
++        if op is None:
++            return False
+         if op.type in pattern.op_type_set:
+             return True
+ 
+--- a/tf2onnx/rewriter/gemm_rewriter.py
++++ b/tf2onnx/rewriter/gemm_rewriter.py
+@@ -90,6 +90,7 @@
+                 if c_shape is None: continue
+                 if a_mul_b_shape is None: continue
+                 if -1 in c_shape + a_mul_b_shape: continue
++                if len(c_shape) > len(a_mul_b_shape): continue
+                 if g.get_rank(a_edge_name) != 2 or g.get_rank(b_edge_name) != 2: continue
+                 compatible = True
+                 for i in range(1, len(c_shape) + 1):
+--- a/tf2onnx/tflite_handlers/tfl_math.py
++++ b/tf2onnx/tflite_handlers/tfl_math.py
+@@ -18,6 +18,8 @@
+ 
+ 
+ def separate_fused_activation_function(ctx, node):
++    if 'fused_activation_function' not in node.attr:
++        return
+     activation_fn = node.attr['fused_activation_function'].s
+     del node.attr['fused_activation_function']
+     if activation_fn == b'RELU':
+@@ -212,7 +214,7 @@
+             shape_const = ctx.make_const(utils.make_name("reshape_shape"), np.array([-1, weights_shape], np.int64))
+             reshape_node = ctx.make_node("Reshape", [node.input[0], shape_const.output[0]])
+             reshape_node.skip_conversion = True
+-            ctx.replace_inputs(node, [reshape_node.output[0], node.input[1]])
++            ctx.replace_inputs(node, [reshape_node.output[0]] + list(node.input[1:]))
+ 
+         transpose_node = ctx.insert_new_node_on_input(node, "Transpose", node.input[1],
+                                                       name=None, input_index=1, perm=[1, 0])
+--- a/tf2onnx/tflite_utils.py
++++ b/tf2onnx/tflite_utils.py
+@@ -232,7 +232,7 @@
+         op_code = model.OperatorCodes(i)
+         # TFlite ran out of opcodes since they only used a byte. Old models store opcodes in DeprecatedBuiltinCode.
+         # New models put PLACEHOLDER_FOR_GREATER_OP_CODES in this field to signify that BuiltinCode should be used.
+-        code = lookup_enum(op_code.DeprecatedBuiltinCode(), 'BuiltinOperator')
++        code = lookup_enum(max(op_code.DeprecatedBuiltinCode(), op_code.BuiltinCode()), 'BuiltinOperator')
+         if code == 'PLACEHOLDER_FOR_GREATER_OP_CODES':
+             code = lookup_enum(op_code.BuiltinCode(), 'BuiltinOperator')
+         if code == 'CUSTOM':
+@@ -386,10 +386,14 @@
+             output_shapes[name] = tensor.ShapeSignatureAsNumpy().tolist()
+         buf = model.Buffers(tensor.Buffer())
+         dtypes[name] = map_tflite_dtype_to_onnx(tensor.Type())
+-        if not buf.DataIsNone() and tensor.Buffer() > 0:
++        _off = buf.Offset() if hasattr(buf, 'Offset') else 0
++        if (not buf.DataIsNone() or _off > 1) and tensor.Buffer() > 0:
+             # For const values we use TF to decode the binary data from the buffer
+             t = tensor_pb2.TensorProto()
+-            t.tensor_content = buf.DataAsNumpy().tobytes()
++            if buf.DataIsNone():
++                t.tensor_content = bytes(model._tab.Bytes[_off:_off + buf.Size()])
++            else:
++                t.tensor_content = buf.DataAsNumpy().tobytes()
+             if output_shapes[name] is None:
+                 output_shapes[name] = []
+             for d in output_shapes[name]:

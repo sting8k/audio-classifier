@@ -35,7 +35,7 @@
         </button>
       {/each}
     </nav>
-    <span class="model mono">speechbrain · voxlingua107-ecapa</span>
+    <span class="model mono">desert ant labs · ear 0.2.1</span>
   </div>
 </header>
 

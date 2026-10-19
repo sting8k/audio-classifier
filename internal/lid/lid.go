@@ -10,7 +10,7 @@ const MaxSeconds = 30
 
 // LangProb is one language class and its softmax probability.
 type LangProb struct {
-	Lang string  `json:"lang"` // ISO 639-1 code from the model's lang_map (e.g. "pt")
+	Lang string  `json:"lang"` // ISO code from the model's languages.json (e.g. "pt", "fil")
 	Prob float64 `json:"prob"`
 }
 

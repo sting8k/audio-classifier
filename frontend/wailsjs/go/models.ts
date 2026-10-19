@@ -161,7 +161,7 @@ export namespace lid {
 	export class Settings {
 	    extensions: string[];
 	    recursive: boolean;
-	    min_confidence: number;
+	    min_margin: number;
 	    workers: number;
 	
 	    static createFrom(source: any = {}) {
@@ -172,7 +172,7 @@ export namespace lid {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.extensions = source["extensions"];
 	        this.recursive = source["recursive"];
-	        this.min_confidence = source["min_confidence"];
+	        this.min_margin = source["min_margin"];
 	        this.workers = source["workers"];
 	    }
 	}

@@ -18,7 +18,7 @@ import (
 )
 
 // Model is the model name written into the JSON header.
-const Model = "speechbrain/lang-id-voxlingua107-ecapa"
+const Model = "desert-ant-labs/ear 0.2.1"
 
 // Fields are the exportable columns, in output order (SPEC "Export").
 var Fields = []string{"folder", "file", "duration_s", "language", "confidence",
@@ -26,8 +26,8 @@ var Fields = []string{"folder", "file", "duration_s", "language", "confidence",
 
 // Options carries what is not in the request or the rows.
 type Options struct {
-	MinConfidence float64   // the run's threshold, recorded in the JSON header
-	Now           time.Time // generated_at; zero = time.Now()
+	MinMargin float64   // the run's review threshold, recorded in the JSON header
+	Now       time.Time // generated_at; zero = time.Now()
 }
 
 type column struct {
@@ -229,8 +229,8 @@ func marshal(v any) ([]byte, error) {
 
 func encodeJSON(buf *bytes.Buffer, cols []column, rows []lid.ClipResult, o Options) error {
 	type settings struct {
-		MaxSeconds    int     `json:"max_seconds"`
-		MinConfidence float64 `json:"min_confidence"`
+		MaxSeconds int     `json:"max_seconds"`
+		MinMargin  float64 `json:"min_margin"`
 	}
 	doc := struct {
 		GeneratedAt string      `json:"generated_at"`
@@ -241,7 +241,7 @@ func encodeJSON(buf *bytes.Buffer, cols []column, rows []lid.ClipResult, o Optio
 	}{
 		GeneratedAt: o.Now.Format(time.RFC3339),
 		Model:       Model,
-		Settings:    settings{MaxSeconds: lid.MaxSeconds, MinConfidence: o.MinConfidence},
+		Settings:    settings{MaxSeconds: lid.MaxSeconds, MinMargin: o.MinMargin},
 		Clips:       make([]jsonRow, len(rows)),
 	}
 	for i, r := range rows {

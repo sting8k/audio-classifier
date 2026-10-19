@@ -51,7 +51,7 @@ func clips(t *testing.T, n int) string {
 	return root
 }
 
-var mp3 = lid.Settings{Extensions: []string{"mp3"}, MinConfidence: 0.6}
+var mp3 = lid.Settings{Extensions: []string{"mp3"}, MinMargin: 0.25}
 
 func waitFor(t *testing.T, what string, cond func() bool) {
 	t.Helper()

@@ -74,12 +74,12 @@ export function csvPreview(rows: Clip[], fields: (keyof Clip)[], forExcel: boole
 }
 
 /** Header + first rows as the JSON file would show them (illustrative, see csvPreview). */
-export function jsonPreview(rows: Clip[], fields: (keyof Clip)[], total: number, minConfidence: number, summary: ReturnType<typeof countBy>): string {
+export function jsonPreview(rows: Clip[], fields: (keyof Clip)[], total: number, minMargin: number, summary: ReturnType<typeof countBy>): string {
   const clips = rows.map((c) => {
     const o: Record<string, unknown> = {}
     for (const k of fields) if (k !== 'error' || c.error) o[k] = c[k] ?? null
     return o
   })
-  const body = JSON.stringify({ generated_at: new Date().toISOString(), model: 'voxlingua107-ecapa', settings: { max_seconds: 30, min_confidence: minConfidence }, summary, clips }, null, 2)
+  const body = JSON.stringify({ generated_at: new Date().toISOString(), model: 'desert-ant-labs/ear 0.2.1', settings: { max_seconds: 30, min_margin: minMargin }, summary, clips }, null, 2)
   return total > rows.length ? body.replace(/\n {2}\]/, `,\n    …\n  ]`) : body
 }

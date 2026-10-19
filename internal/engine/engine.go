@@ -1,13 +1,11 @@
 // Package engine is the real lid.Detector / lid.Prober:
-// ffmpeg decode (first 30 s) -> Silero VAD -> one ECAPA pass over the kept speech -> top 2.
+// ffmpeg decode (first 30 s) -> Silero VAD -> one Ear pass over the kept speech -> top 2.
 package engine
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"os"
-	"strconv"
 	"sync"
 
 	"github.com/sting8k/audio-classifier/internal/lid"
@@ -18,13 +16,14 @@ const sampleRate = 16000
 
 // Config holds explicit file locations (no guessing inside the package) and thread settings.
 type Config struct {
-	FFmpeg  string // ffmpeg executable; it also does the duration probe, so no ffprobe is needed
-	ORTLib  string // onnxruntime shared library (must be ORT 1.23.x, see scripts/fetch-assets.sh)
-	ECAPA   string // voxlingua107.onnx
-	LangMap string // lang_map.json shipped with the ECAPA model
-	VAD     string // silero_vad.onnx
+	FFmpeg     string // ffmpeg executable; it also does the duration probe, so no ffprobe is needed
+	ORTLib     string // onnxruntime shared library (must be ORT 1.23.x, see scripts/fetch-assets.sh)
+	Model      string // ear.onnx (scripts/ear-onnx)
+	Languages  string // languages.json: ISO code per model class
+	MelFilters string // mel_filters.f32: the model's mel filterbank
+	VAD        string // silero_vad.onnx
 
-	// IntraOpThreads is the thread count of the ECAPA session's intra-op pool, shared by all
+	// IntraOpThreads is the thread count of the language model's intra-op pool, shared by all
 	// concurrent Detect calls. 0 lets ORT use one thread per core.
 	IntraOpThreads int
 }
@@ -32,9 +31,11 @@ type Config struct {
 // Engine implements lid.Detector and lid.Prober. Safe for concurrent use.
 type Engine struct {
 	ffmpeg string
-	langs  []string // ECAPA class index -> ISO code
+	langs  []string    // model class index -> ISO code
+	mel    [][]float64 // mel filterbank [band][FFT bin]
+	hann   []float64
 	vad    *ort.DynamicAdvancedSession
-	ecapa  *ort.DynamicAdvancedSession
+	model  *ort.DynamicAdvancedSession
 }
 
 var (
@@ -78,39 +79,38 @@ func releaseEnv() {
 
 // New loads both models. Close must be called to free them.
 func New(cfg Config) (*Engine, error) {
-	for _, p := range []string{cfg.FFmpeg, cfg.ORTLib, cfg.ECAPA, cfg.LangMap, cfg.VAD} {
+	for _, p := range []string{cfg.FFmpeg, cfg.ORTLib, cfg.Model, cfg.Languages, cfg.MelFilters, cfg.VAD} {
 		if _, err := os.Stat(p); err != nil {
 			return nil, err
 		}
 	}
-	langs, err := loadLangMap(cfg.LangMap)
+	langs, err := loadLanguages(cfg.Languages)
+	if err != nil {
+		return nil, err
+	}
+	mel, err := loadMelFilters(cfg.MelFilters)
 	if err != nil {
 		return nil, err
 	}
 	if err := acquireEnv(cfg.ORTLib); err != nil {
 		return nil, err
 	}
-	e := &Engine{ffmpeg: cfg.FFmpeg, langs: langs}
+	e := &Engine{ffmpeg: cfg.FFmpeg, langs: langs, mel: mel, hann: hannPeriodic(melFFT)}
 	if e.vad, err = newSession(cfg.VAD, []string{"input", "state", "sr"}, []string{"output", "stateN"}, 1, nil); err != nil {
 		releaseEnv()
 		return nil, fmt.Errorf("silero vad: %w", err)
 	}
-	if e.ecapa, err = newSession(cfg.ECAPA, []string{"audio"}, []string{"logits"}, cfg.IntraOpThreads, ecapaOptions); err != nil {
+	if e.model, err = newSession(cfg.Model, []string{"serving_default_mel"}, []string{"serving_default_output_0_output"}, cfg.IntraOpThreads, noSpinning); err != nil {
 		e.vad.Destroy()
 		releaseEnv()
-		return nil, fmt.Errorf("ecapa: %w", err)
+		return nil, fmt.Errorf("ear: %w", err)
 	}
 	return e, nil
 }
 
-// ecapaOptions: the input length differs per clip, so ORT's memory-pattern cache (built for
-// fixed shapes) only costs RAM: measured peak RSS with 6 concurrent clips 2.1 GB -> 1.0 GB,
-// throughput within noise. Spinning threads burn CPU while waiting: 3.3 -> 1.8 CPU-s per clip
-// with 6 intra-op threads, throughput not lower. See the benchmark notes in the commit message.
-func ecapaOptions(o *ort.SessionOptions) error {
-	if err := o.SetMemPattern(false); err != nil {
-		return err
-	}
+// noSpinning: spinning intra-op threads burn CPU while waiting (measured with the previous
+// model: 3.3 -> 1.8 CPU-s per clip with 6 threads, throughput not lower).
+func noSpinning(o *ort.SessionOptions) error {
 	return o.AddSessionConfigEntry("session.intra_op.allow_spinning", "0")
 }
 
@@ -140,32 +140,9 @@ func newSession(model string, in, out []string, intraOp int, extra func(*ort.Ses
 // Close releases the models. No Detect may be running.
 func (e *Engine) Close() error {
 	e.vad.Destroy()
-	e.ecapa.Destroy()
+	e.model.Destroy()
 	releaseEnv()
 	return nil
-}
-
-// loadLangMap reads {"0": {"iso": "ab", ...}, ...} into a slice indexed by class.
-func loadLangMap(path string) ([]string, error) {
-	raw, err := os.ReadFile(path)
-	if err != nil {
-		return nil, err
-	}
-	var m map[string]struct {
-		ISO string `json:"iso"`
-	}
-	if err := json.Unmarshal(raw, &m); err != nil {
-		return nil, fmt.Errorf("%s: %w", path, err)
-	}
-	langs := make([]string, len(m))
-	for k, v := range m {
-		i, err := strconv.Atoi(k)
-		if err != nil || i < 0 || i >= len(langs) || v.ISO == "" {
-			return nil, fmt.Errorf("%s: bad entry %q", path, k)
-		}
-		langs[i] = v.ISO
-	}
-	return langs, nil
 }
 
 // Detect decodes up to the first lid.MaxSeconds of path and identifies the language.
