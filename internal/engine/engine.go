@@ -91,11 +91,11 @@ func New(cfg Config) (*Engine, error) {
 		return nil, err
 	}
 	e := &Engine{ffmpeg: cfg.FFmpeg, langs: langs}
-	if e.vad, err = newSession(cfg.VAD, []string{"input", "state", "sr"}, []string{"output", "stateN"}, 1); err != nil {
+	if e.vad, err = newSession(cfg.VAD, []string{"input", "state", "sr"}, []string{"output", "stateN"}, 1, nil); err != nil {
 		releaseEnv()
 		return nil, fmt.Errorf("silero vad: %w", err)
 	}
-	if e.ecapa, err = newSession(cfg.ECAPA, []string{"audio"}, []string{"logits"}, cfg.IntraOpThreads); err != nil {
+	if e.ecapa, err = newSession(cfg.ECAPA, []string{"audio"}, []string{"logits"}, cfg.IntraOpThreads, ecapaOptions); err != nil {
 		e.vad.Destroy()
 		releaseEnv()
 		return nil, fmt.Errorf("ecapa: %w", err)
@@ -103,7 +103,18 @@ func New(cfg Config) (*Engine, error) {
 	return e, nil
 }
 
-func newSession(model string, in, out []string, intraOp int) (*ort.DynamicAdvancedSession, error) {
+// ecapaOptions: the input length differs per clip, so ORT's memory-pattern cache (built for
+// fixed shapes) only costs RAM: measured peak RSS with 6 concurrent clips 2.1 GB -> 1.0 GB,
+// throughput within noise. Spinning threads burn CPU while waiting: 3.3 -> 1.8 CPU-s per clip
+// with 6 intra-op threads, throughput not lower. See the benchmark notes in the commit message.
+func ecapaOptions(o *ort.SessionOptions) error {
+	if err := o.SetMemPattern(false); err != nil {
+		return err
+	}
+	return o.AddSessionConfigEntry("session.intra_op.allow_spinning", "0")
+}
+
+func newSession(model string, in, out []string, intraOp int, extra func(*ort.SessionOptions) error) (*ort.DynamicAdvancedSession, error) {
 	opts, err := ort.NewSessionOptions()
 	if err != nil {
 		return nil, err
@@ -117,6 +128,11 @@ func newSession(model string, in, out []string, intraOp int) (*ort.DynamicAdvanc
 	}
 	if err := opts.SetLogSeverityLevel(ort.LoggingLevelError); err != nil {
 		return nil, err
+	}
+	if extra != nil {
+		if err := extra(opts); err != nil {
+			return nil, err
+		}
 	}
 	return ort.NewDynamicAdvancedSession(model, in, out, opts)
 }

@@ -93,6 +93,12 @@ func TestSpeechSpansMatchSilero(t *testing.T) {
 	}
 }
 
+func TestNaNLogitsAreAnError(t *testing.T) {
+	if _, err := top2(softmax([]float32{float32(math.NaN()), 1, 2}), []string{"a", "b", "c"}); err == nil {
+		t.Error("NaN logits produced a result")
+	}
+}
+
 func TestSilentClipIsNoSpeech(t *testing.T) {
 	e := newEngine(t, 1)
 	// The name starts with '-' and holds ':' and spaces: it must reach ffmpeg as a plain file.

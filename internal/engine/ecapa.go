@@ -1,6 +1,7 @@
 package engine
 
 import (
+	"errors"
 	"fmt"
 	"math"
 	"sort"
@@ -47,6 +48,9 @@ func softmax(logits []float32) []float64 {
 func top2(p []float64, langs []string) ([]lid.LangProb, error) {
 	if len(p) != len(langs) {
 		return nil, fmt.Errorf("model has %d classes, lang_map has %d", len(p), len(langs))
+	}
+	if math.IsNaN(p[0]) { // NaN would make the whole JSON export fail
+		return nil, errors.New("model returned NaN")
 	}
 	idx := make([]int, len(p))
 	for i := range idx {
