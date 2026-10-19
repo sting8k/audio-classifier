@@ -111,6 +111,15 @@ export async function pickFolder() {
   }
 }
 
+export async function pickFiles() {
+  try {
+    const ps = await api.PickFiles()
+    if (ps?.length) addFolders(ps)
+  } catch (e) {
+    input.error = errText(e)
+  }
+}
+
 export function removeFolder(path: string) {
   input.paths = input.paths.filter((p) => p !== path)
   input.folders = input.folders.filter((f) => f.path !== path)

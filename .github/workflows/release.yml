@@ -49,7 +49,7 @@ jobs:
       - name: Package
         run: |
           set -euo pipefail
-          name=LangIDBatch-$TAG-${{ matrix.plat }}
+          name=AudioLangClassifier-$TAG-${{ matrix.plat }}
           mkdir -p dist-pkg
           case "${{ matrix.plat }}" in
             darwin-*)
@@ -61,12 +61,12 @@ jobs:
               ditto -c -k --keepParent "$app" dist-pkg/$name.zip ;;
             windows-*)
               mkdir -p "pkg/$name/third_party"
-              cp build/bin/LangIDBatch.exe "pkg/$name/"
+              cp build/bin/AudioLangClassifier.exe "pkg/$name/"
               cp -R third_party/${{ matrix.plat }} "pkg/$name/third_party/"
               (cd pkg && 7z a -tzip ../dist-pkg/$name.zip "$name" >/dev/null) ;;
             linux-*)
               mkdir -p "pkg/$name/third_party"
-              cp build/bin/LangIDBatch "pkg/$name/"
+              cp build/bin/AudioLangClassifier "pkg/$name/"
               cp -R third_party/${{ matrix.plat }} "pkg/$name/third_party/"
               tar -C pkg -czf dist-pkg/$name.tar.gz "$name" ;;
           esac
@@ -90,4 +90,4 @@ jobs:
         run: |
           gh release create "$TAG" dist/* --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
             --prerelease --title "$TAG (dev build)" \
-            --notes "Dev build, untested on Windows/macOS. macOS: unsigned, run \`xattr -cr \"LangID Batch.app\"\` once (SPEC D-9). Windows needs the WebView2 runtime (built into Windows 11)."
+            --notes "Dev build, untested on Windows/macOS. macOS: unsigned, run \`xattr -cr \"Audio Language Classifier.app\"\` once (SPEC D-9). Windows needs the WebView2 runtime (built into Windows 11)."

@@ -44,7 +44,7 @@ func main() {
 
 	// Create application with options
 	err := wails.Run(&options.App{
-		Title:     "LangID Batch",
+		Title:     "Audio Language Classifier",
 		Width:     1280,
 		Height:    860,
 		MinWidth:  960,

@@ -1,7 +1,7 @@
 <script lang="ts">
   import Icon from '../components/Icon.svelte'
   import { hm, parentDir, plural, skippedText } from '../lib/format'
-  import { clearFolders, folderSeconds, hasRun, input, isActive, pickFolder, plan, removeFolder, rescanSoon, runnable, start } from '../lib/store.svelte'
+  import { clearFolders, folderSeconds, hasRun, input, isActive, pickFiles, pickFolder, plan, removeFolder, rescanSoon, runnable, start } from '../lib/store.svelte'
 
   let starting = $state(false)
   let startError = $state('')
@@ -13,13 +13,13 @@
     isActive()
       ? 'A run is in progress — see step 2.'
       : !input.paths.length
-        ? 'Add at least one folder.'
+        ? 'Add at least one folder or file.'
         : input.settings.extensions.length === 0
           ? 'Select at least one file format.'
           : !thresholdOk
             ? 'The confidence threshold must be between 0 and 1.'
             : input.scanning
-              ? 'Scanning folders…'
+              ? 'Scanning…'
               : total.clips === 0
                 ? 'No clips found with the selected formats.'
                 : '',
@@ -39,19 +39,20 @@
   <section class="card stack" aria-labelledby="h-input">
     <div class="head">
       <div>
-        <h1 id="h-input">Input folders</h1>
-        <p class="muted">Each folder is scanned for the audio and video clips whose language will be detected.</p>
+        <h1 id="h-input">Input</h1>
+        <p class="muted">Add folders or single files. Folders are scanned for the audio and video clips whose language will be detected.</p>
       </div>
       <div class="actions">
         <button type="button" class="btn" disabled={!input.paths.length} onclick={clearFolders}>Clear all</button>
+        <button type="button" class="btn outline" onclick={pickFiles}><Icon name="plus" />Add files</button>
         <button type="button" class="btn outline" onclick={pickFolder}><Icon name="plus" />Add folder</button>
       </div>
     </div>
 
     <div class="dropzone" class:compact={input.paths.length > 0}>
       <Icon name="folder" size={input.paths.length ? 20 : 32} />
-      <div class="drop-title">Drag and drop one or more folders here</div>
-      <div class="drop-sub">or click “Add folder” to pick them in Finder / File Explorer</div>
+      <div class="drop-title">Drag and drop folders or audio/video files here</div>
+      <div class="drop-sub">or click “Add folder” / “Add files” to pick them in Finder / File Explorer</div>
     </div>
 
     {#if input.error}<p class="alert" role="alert">{input.error}</p>{/if}
@@ -61,7 +62,7 @@
         <table>
           <thead>
             <tr>
-              <th>Folder</th>
+              <th>Folder or file</th>
               <th class="right c-clips" title="Clips matching the selected formats">Clips</th>
               <th class="c-skip">Skipped</th>
               <th class="right c-dur">Total duration</th>
@@ -91,7 +92,7 @@
       </div>
 
       <p class="muted">
-        {plural(validFolders, 'folder')} · <strong class="strong">{plural(total.clips, 'clip')}</strong>
+        {plural(validFolders, 'item')} · <strong class="strong">{plural(total.clips, 'clip')}</strong>
         {#if total.seconds > 0}· {total.unknown ? 'at least ' : 'about '}{hm(total.seconds)} of audio{:else if total.unknown}· calculating duration…{/if}
         {#if input.scanning}<span class="pending">· scanning…</span>{/if}
       </p>

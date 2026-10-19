@@ -266,7 +266,7 @@ func encodeJSON(buf *bytes.Buffer, cols []column, rows []lid.ClipResult, o Optio
 
 // replaceFile writes data next to path and renames it over path.
 func replaceFile(path string, data []byte) error {
-	tmp, err := os.CreateTemp(filepath.Dir(path), ".langid-export-*")
+	tmp, err := os.CreateTemp(filepath.Dir(path), ".export-*.tmp")
 	if err != nil {
 		return err
 	}

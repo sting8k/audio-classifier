@@ -12,11 +12,13 @@ import (
 	"github.com/sting8k/audio-classifier/internal/lid"
 )
 
-// Folder is one scanned root: the clips to process and the files left out.
+// Folder is one scanned root, a folder or a single file the user added: the
+// clips to process and the files left out.
 type Folder struct {
 	Path    string         // exactly as the user gave it
 	Name    string         // last path element, for display
-	Files   []string       // matching clips, relative to Path, "/"-separated, in walk order
+	Dir     string         // folder the Files are relative to: Path, or a file's parent
+	Files   []string       // matching clips, relative to Dir, "/"-separated, in walk order
 	Skipped map[string]int // other visible files by lower-case extension ("" = none)
 	Err     string         // set when Path itself cannot be read; Files is empty then
 }
@@ -24,21 +26,26 @@ type Folder struct {
 // ScanFolder lists the clips under root whose extension is in s.Extensions
 // (case-insensitive), descending into sub-folders only if s.Recursive.
 // Hidden files and directories (and so macOS "._" companions) are ignored and
-// not counted as skipped.
+// not counted as skipped. A root that is a file is one clip (or one skipped file).
 func ScanFolder(root string, s lid.Settings) Folder {
-	f := Folder{Path: root, Name: filepath.Base(root), Skipped: map[string]int{}}
+	f := Folder{Path: root, Name: filepath.Base(root), Dir: root, Skipped: map[string]int{}}
+	want := make(map[string]bool, len(s.Extensions))
+	for _, e := range s.Extensions {
+		want[strings.ToLower(strings.TrimPrefix(e, "."))] = true
+	}
 	st, err := os.Stat(root)
 	switch {
 	case err != nil:
 		f.Err = err.Error()
 		return f
 	case !st.IsDir():
-		f.Err = "not a folder"
+		f.Dir = filepath.Dir(root)
+		if ext := strings.ToLower(strings.TrimPrefix(filepath.Ext(root), ".")); want[ext] {
+			f.Files = []string{filepath.Base(root)}
+		} else {
+			f.Skipped[ext] = 1
+		}
 		return f
-	}
-	want := make(map[string]bool, len(s.Extensions))
-	for _, e := range s.Extensions {
-		want[strings.ToLower(strings.TrimPrefix(e, "."))] = true
 	}
 	err = filepath.WalkDir(root, func(p string, d fs.DirEntry, err error) error {
 		if p == root {
@@ -95,7 +102,7 @@ func (f Folder) Summary() lid.FolderSummary {
 	return fs
 }
 
-// abs joins a Files entry back onto the folder path.
-func (f Folder) abs(rel string) string { return filepath.Join(f.Path, filepath.FromSlash(rel)) }
+// abs joins a Files entry back onto the folder it is relative to.
+func (f Folder) abs(rel string) string { return filepath.Join(f.Dir, filepath.FromSlash(rel)) }
 
 var errNoClips = errors.New("no clips to process")

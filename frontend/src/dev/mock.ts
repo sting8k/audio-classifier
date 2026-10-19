@@ -109,7 +109,7 @@ const base = (p: string) => p.replace(/[\\/]+$/, '').split(/[\\/]/).pop() || p
 function summaryFor(path: string, s: lid.Settings): lid.FolderSummary {
   const known = FOLDERS[path]
   const frac = (s.extensions.length / ALL_EXT.length) * (s.recursive ? 1 : 0.85)
-  if (/\.[a-z0-9]{2,4}$/i.test(base(path))) return { path, name: base(path), clips: 0, skipped: {}, error: 'not a folder' } as lid.FolderSummary
+  if (/\.[a-z0-9]{2,4}$/i.test(base(path))) return { path, name: base(path), clips: 1, skipped: {} } as lid.FolderSummary
   if (/khong_co_quyen/i.test(path)) return { path, name: base(path), clips: 0, skipped: {}, error: `open ${path}: permission denied` } as lid.FolderSummary
   const clips = known ? Math.round(known.clips * frac) : 8 + (path.length % 20)
   return { path, name: base(path), clips, skipped: known?.skipped ?? { txt: 1 } } as lid.FolderSummary
@@ -169,6 +169,7 @@ const App = {
   DefaultSettings: async (): Promise<lid.Settings> => ({ extensions: [...ALL_EXT], recursive: false, min_confidence: 0.6, workers: 0 }) as lid.Settings,
 
   PickFolder: async () => PICKS[state.pickIdx++ % PICKS.length],
+  PickFiles: async () => ['/Users/demo/Downloads/clip 1.mp3', '/Users/demo/Downloads/clip 2.mp4'],
 
   ScanFolders: async (paths: string[], s: lid.Settings) => {
     const seq = ++state.scanSeq

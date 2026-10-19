@@ -274,7 +274,7 @@ func (r *run) worker() {
 // process classifies one clip. After Cancel the Detector fails with the
 // cancelled context; record drops that row along with any other late one.
 func (r *run) process(j job) (res lid.ClipResult) {
-	res = lid.ClipResult{Folder: r.folders[j.folder].Path, File: j.rel, Path: j.path}
+	res = lid.ClipResult{Folder: r.folders[j.folder].Dir, File: j.rel, Path: j.path}
 	det, err := r.cfg.Detector.Detect(r.ctx, j.path)
 	if err != nil {
 		res.Status, res.Error = lid.StatusError, err.Error()

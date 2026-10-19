@@ -26,6 +26,10 @@ export function PickExportPath(arg1) {
   return window['go']['main']['App']['PickExportPath'](arg1);
 }
 
+export function PickFiles() {
+  return window['go']['main']['App']['PickFiles']();
+}
+
 export function PickFolder() {
   return window['go']['main']['App']['PickFolder']();
 }

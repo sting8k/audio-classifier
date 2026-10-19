@@ -14,6 +14,8 @@ export function Pause():Promise<void>;
 
 export function PickExportPath(arg1:string):Promise<string>;
 
+export function PickFiles():Promise<Array<string>>;
+
 export function PickFolder():Promise<string>;
 
 export function Progress():Promise<lid.Progress>;

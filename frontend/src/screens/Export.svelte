@@ -13,7 +13,7 @@
   const filterOn = $derived(Object.values(res.filter).some(Boolean))
 
   const today = new Date().toLocaleDateString('sv-SE') // YYYY-MM-DD in local time
-  const defaultName = $derived(`langid_${today}.${exp.format}`)
+  const defaultName = $derived(`language-results_${today}.${exp.format}`)
   const preview = $derived(
     exp.format === 'json'
       ? jsonPreview(clips.slice(0, 3), fields, clips.length, run.minConfidence, countBy(clips))

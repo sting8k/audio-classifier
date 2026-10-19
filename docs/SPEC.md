@@ -1,4 +1,4 @@
-# LangID Batch — spec
+# Audio Language Classifier — spec
 
 Desktop tool (Windows + macOS) that detects the spoken language of every audio/video clip
 in a list of folders and exports the results as JSON or CSV.

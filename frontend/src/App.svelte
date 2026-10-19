@@ -9,7 +9,7 @@
   import { go, hasRun, init, input, nav, type Screen } from './lib/store.svelte'
 
   const STEPS: { id: Screen; label: string }[] = [
-    { id: 'folders', label: 'Folders' },
+    { id: 'folders', label: 'Input' },
     { id: 'running', label: 'Detection' },
     { id: 'results', label: 'Results' },
     { id: 'export', label: 'Export' },
@@ -25,7 +25,7 @@
   <div class="bar-inner">
     <div class="brand">
       <Icon name="logo" size={20} />
-      <span>LangID Batch</span>
+      <span>Audio Language Classifier</span>
     </div>
     <nav aria-label="Steps">
       {#each STEPS as s, i (s.id)}

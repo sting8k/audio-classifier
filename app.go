@@ -53,12 +53,27 @@ func (a *App) PickFolder() (string, error) {
 	return runtime.OpenDirectoryDialog(a.ctx, runtime.OpenDialogOptions{Title: "Choose a folder"})
 }
 
-// ScanFolders counts matching clips in each folder (screen 1 table) and returns
+// PickFiles opens the native multi-file picker filtered to the clip formats; nil if the user cancels.
+func (a *App) PickFiles() ([]string, error) {
+	pat := ""
+	for i, e := range lid.DefaultExtensions {
+		if i > 0 {
+			pat += ";"
+		}
+		pat += "*." + e
+	}
+	return runtime.OpenMultipleFilesDialog(a.ctx, runtime.OpenDialogOptions{
+		Title:   "Choose audio or video files",
+		Filters: []runtime.FileFilter{{DisplayName: "Audio and video", Pattern: pat}},
+	})
+}
+
+// ScanFolders counts matching clips in each folder or file (screen 1 table) and returns
 // at once with total_duration_s null for folders that have clips. Durations are
 // probed in the background and each folder's total arrives as a
 // lid.EventFolderTotals event; call ScanFolders again (with every folder)
 // whenever the list or the extension/recursive settings change.
-// Dropped paths that are files, not folders, come back with Error set.
+// A path that is a file counts as one clip (or one skipped file).
 func (a *App) ScanFolders(paths []string, s lid.Settings) []lid.FolderSummary {
 	return a.scanner.Scan(paths, s, func(fs lid.FolderSummary) {
 		runtime.EventsEmit(a.ctx, lid.EventFolderTotals, fs)
