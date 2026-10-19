@@ -50,7 +50,11 @@ Clips run in parallel through a bounded worker pool (one ffmpeg process per in-f
 ## Export
 
 - JSON or CSV; scope: all / current results filter / selected folders; selectable fields.
-- CSV option: UTF-8 with BOM (default on) for Excel on Windows.
+- CSV option: "for Excel" = UTF-8 with BOM **and `;` as delimiter** (default on), because Excel on a Windows
+  region with a decimal comma (e.g. Vietnamese) splits on `;`. Off = plain UTF-8, `,` delimiter.
+  Unverified on a real vi-VN Excel; check one before release.
+- CSV only: a cell whose text starts with `=`, `+`, `-` or `@` gets a leading `'` so Excel does not run it as a formula
+  (file names may come from outside). JSON keeps every value as is.
 - Fields: folder, file, duration_s, language, confidence, second_language, second_confidence, status, error.
 - JSON header: generated_at, model, settings (`max_seconds`, `min_confidence`), summary counts.
 
