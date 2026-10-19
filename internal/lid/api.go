@@ -70,6 +70,12 @@ type Progress struct {
 // EventProgress is the Wails event name carrying a Progress payload.
 const EventProgress = "progress"
 
+// EventFolderTotals carries one FolderSummary with TotalDurationS filled in,
+// emitted once per folder when background duration probing for the latest
+// ScanFolders call finishes. A newer ScanFolders call supersedes older probing
+// (stale events never fire). The frontend matches it to its row by Path.
+const EventFolderTotals = "folder_totals"
+
 // ExportRequest is what screen 4 sends. The frontend resolves the scope
 // (all / current filter / selected folders) into Paths; empty Paths = all results.
 type ExportRequest struct {
