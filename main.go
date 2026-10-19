@@ -2,7 +2,9 @@ package main
 
 import (
 	"embed"
+	"time"
 
+	"github.com/sting8k/audio-classifier/internal/lid"
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
@@ -12,8 +14,10 @@ import (
 var assets embed.FS
 
 func main() {
-	// Create an instance of the app structure
-	app := NewApp()
+	// TODO(integration): swap in internal/engine; LANGID_FAKE=1 keeps lid.Fake.
+	// The delay makes pause/cancel visible while the UI is built against the fake.
+	eng := lid.Fake{Delay: 300 * time.Millisecond}
+	app := NewApp(eng, eng)
 
 	// Create application with options
 	err := wails.Run(&options.App{
@@ -28,6 +32,7 @@ func main() {
 		BackgroundColour: &options.RGBA{R: 255, G: 255, B: 255, A: 1},
 		DragAndDrop:      &options.DragAndDrop{EnableFileDrop: true},
 		OnStartup:        app.startup,
+		OnShutdown:       app.shutdown,
 		Bind: []interface{}{
 			app,
 		},

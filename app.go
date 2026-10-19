@@ -2,26 +2,46 @@ package main
 
 import (
 	"context"
-	"errors"
-	"path/filepath"
 	"time"
 
+	"github.com/sting8k/audio-classifier/internal/batch"
+	"github.com/sting8k/audio-classifier/internal/export"
 	"github.com/sting8k/audio-classifier/internal/lid"
+	"github.com/sting8k/audio-classifier/internal/reveal"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // App is the Wails-bound API used by the frontend. Method signatures are the
-// contract with the UI (generated into frontend/wailsjs/go/main/App.*).
-//
-// SCAFFOLD: bodies below are canned stubs so the UI can be built in parallel.
-// The app peer replaces them with internal/batch; signatures change only via the lead.
+// contract with the UI (generated into frontend/wailsjs/go/main/App.*) and
+// change only via the lead. The bodies are thin: the work is in internal/batch,
+// internal/export and internal/reveal.
 type App struct {
-	ctx context.Context
+	ctx     context.Context
+	det     lid.Detector
+	runner  *batch.Runner
+	scanner *batch.Scanner
 }
 
-func NewApp() *App { return &App{} }
+// NewApp wires the app to an engine. The Detector and Prober are usually the
+// same object (internal/engine, or lid.Fake).
+func NewApp(det lid.Detector, prober lid.Prober) *App {
+	a := &App{det: det, scanner: batch.NewScanner(prober)}
+	a.runner = batch.NewRunner(batch.Config{
+		Detector:   det,
+		Prober:     prober,
+		OnProgress: func(p lid.Progress) { runtime.EventsEmit(a.ctx, lid.EventProgress, p) },
+	})
+	return a
+}
 
 func (a *App) startup(ctx context.Context) { a.ctx = ctx }
+
+// shutdown stops the run, waits for the workers to leave the engine, then closes it.
+func (a *App) shutdown(context.Context) {
+	a.scanner.Cancel()
+	a.runner.Shutdown(5 * time.Second)
+	a.det.Close()
+}
 
 // DefaultSettings returns the initial screen-1 settings.
 func (a *App) DefaultSettings() lid.Settings {
@@ -33,43 +53,38 @@ func (a *App) PickFolder() (string, error) {
 	return runtime.OpenDirectoryDialog(a.ctx, runtime.OpenDialogOptions{Title: "Chọn thư mục"})
 }
 
-// ScanFolders counts matching clips in each folder (screen 1 table).
+// ScanFolders counts matching clips in each folder (screen 1 table) and returns
+// at once with total_duration_s null for folders that have clips. Durations are
+// probed in the background and each folder's total arrives as a
+// lid.EventFolderTotals event; call ScanFolders again (with every folder)
+// whenever the list or the extension/recursive settings change.
 // Dropped paths that are files, not folders, come back with Error set.
 func (a *App) ScanFolders(paths []string, s lid.Settings) []lid.FolderSummary {
-	out := make([]lid.FolderSummary, 0, len(paths))
-	for _, p := range paths {
-		d := 3600.0
-		out = append(out, lid.FolderSummary{Path: p, Name: filepath.Base(p), Clips: 12, Skipped: map[string]int{"txt": 1}, TotalDurationS: &d})
-	}
-	return out
+	return a.scanner.Scan(paths, s, func(fs lid.FolderSummary) {
+		runtime.EventsEmit(a.ctx, lid.EventFolderTotals, fs)
+	})
 }
 
 // Start runs detection over the folders; progress arrives as lid.EventProgress events.
+// It fails if a run is active or the folders hold no clips.
 func (a *App) Start(folders []string, s lid.Settings) error {
-	if len(folders) == 0 {
-		return errors.New("no folders")
-	}
-	go func() { // SCAFFOLD: fake progress
-		for i := 1; i <= 12; i++ {
-			time.Sleep(300 * time.Millisecond)
-			runtime.EventsEmit(a.ctx, lid.EventProgress, a.stubProgress(i, 12))
-		}
-	}()
-	return nil
+	a.scanner.Cancel() // the run needs the CPU more than the totals do
+	return a.runner.Start(folders, s)
 }
 
-func (a *App) Pause()  {}
-func (a *App) Resume() {}
-func (a *App) Cancel() {}
+// Pause stops handing out new clips; clips in flight finish.
+func (a *App) Pause() { a.runner.Pause() }
+
+func (a *App) Resume() { a.runner.Resume() }
+
+// Cancel stops now and keeps the results finished so far.
+func (a *App) Cancel() { a.runner.Cancel() }
 
 // Progress returns the current snapshot (same shape as the event payload).
-func (a *App) Progress() lid.Progress { return a.stubProgress(0, 0) }
+func (a *App) Progress() lid.Progress { return a.runner.Progress() }
 
-// Results returns every finished clip of the current/last run.
-func (a *App) Results() []lid.ClipResult {
-	c, sc := 0.93, 0.05
-	return []lid.ClipResult{{Folder: "/tmp/demo", File: "a.mp3", Path: "/tmp/demo/a.mp3", Language: "vi", Confidence: &c, SecondLanguage: "en", SecondConfidence: &sc, Status: lid.StatusOK}}
-}
+// Results returns every finished clip of the current/last run, in scan order.
+func (a *App) Results() []lid.ClipResult { return a.runner.Results() }
 
 // PickExportPath opens the native save dialog; "" if the user cancels.
 func (a *App) PickExportPath(defaultName string) (string, error) {
@@ -77,15 +92,9 @@ func (a *App) PickExportPath(defaultName string) (string, error) {
 }
 
 // Export writes the selected results as JSON or CSV to req.Out.
-func (a *App) Export(req lid.ExportRequest) error { return errors.New("not implemented") }
-
-// OpenFileLocation reveals the file in Finder / Explorer.
-func (a *App) OpenFileLocation(path string) error { return errors.New("not implemented") }
-
-func (a *App) stubProgress(done, total int) lid.Progress {
-	st := lid.StateRunning
-	if done == total {
-		st = lid.StateDone
-	}
-	return lid.Progress{State: st, Done: done, Total: total, Summary: lid.Summary{Total: done, OK: done}}
+func (a *App) Export(req lid.ExportRequest) error {
+	return export.Write(req, a.runner.Results(), export.Options{MinConfidence: a.runner.Settings().MinConfidence})
 }
+
+// OpenFileLocation reveals the file in Finder / Explorer (on Linux, opens its folder).
+func (a *App) OpenFileLocation(path string) error { return reveal.File(path) }
