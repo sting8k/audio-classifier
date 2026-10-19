@@ -19,7 +19,7 @@ const sampleRate = 16000
 // Config holds explicit file locations (no guessing inside the package) and thread settings.
 type Config struct {
 	FFmpeg  string // ffmpeg executable; it also does the duration probe, so no ffprobe is needed
-	ORTLib  string // onnxruntime shared library (must be ORT 1.29.x, see scripts/fetch-assets.sh)
+	ORTLib  string // onnxruntime shared library (must be ORT 1.23.x, see scripts/fetch-assets.sh)
 	ECAPA   string // voxlingua107.onnx
 	LangMap string // lang_map.json shipped with the ECAPA model
 	VAD     string // silero_vad.onnx

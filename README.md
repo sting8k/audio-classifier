@@ -10,7 +10,8 @@ Get the zip for your system from [Releases](https://github.com/sting8k/audio-cla
 
 | System | File |
 |---|---|
-| macOS (Apple Silicon) | `…-darwin-arm64.zip` |
+| macOS (Apple Silicon: M1, M2…) | `…-darwin-arm64.zip` |
+| macOS (Intel) | `…-darwin-amd64.zip` |
 | Windows (64-bit) | `…-windows-amd64.zip` |
 | Linux (x86-64) | `…-linux-amd64.tar.gz` |
 

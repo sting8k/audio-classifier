@@ -26,6 +26,7 @@ jobs:
           - { os: ubuntu-24.04, plat: linux-amd64, tags: "-tags webkit2_41" }
           - { os: windows-2022, plat: windows-amd64, tags: "" }
           - { os: macos-14, plat: darwin-arm64, tags: "" }
+          - { os: macos-15-intel, plat: darwin-amd64, tags: "" }
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -93,7 +94,7 @@ jobs:
           cat > notes.md <<'EOF'
           Unzip and run; ffmpeg, onnxruntime and the models are bundled, no internet needed.
 
-          - **macOS (Apple Silicon)**: the app is not signed. Once, run `xattr -cr "Audio Language Classifier.app"`, then open it.
+          - **macOS (Apple Silicon: darwin-arm64, Intel: darwin-amd64)**: the app is not signed. Once, run `xattr -cr "Audio Language Classifier.app"`, then open it.
           - **Windows (64-bit)**: keep the `third_party` folder next to `AudioLangClassifier.exe`. Needs the WebView2 runtime (built into Windows 11).
           - **Linux (x86-64)**: needs `libwebkit2gtk-4.1`.
 

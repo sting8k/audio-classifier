@@ -3,7 +3,7 @@
 # Every download is pinned by URL and sha256; a mismatch aborts before the old target dir is touched.
 #
 #   scripts/fetch-assets.sh                 # host target only
-#   scripts/fetch-assets.sh all             # linux-amd64 windows-amd64 darwin-arm64
+#   scripts/fetch-assets.sh all             # linux-amd64 windows-amd64 darwin-arm64 darwin-amd64
 #   scripts/fetch-assets.sh darwin-arm64 windows-amd64
 #
 # Needs: bash, curl, tar, and unzip | bsdtar | python3 (for .zip), sha256sum | shasum.
@@ -14,12 +14,12 @@
 #   licenses/                               (texts that ship in the archives + model notices)
 #
 # What is bundled and under which licence:
-#   onnxruntime 1.29.0 (CPU)  MIT. Must equal the C API header version of the Go binding
-#                             github.com/yalue/onnxruntime_go v1.36.0 (ORT_API_VERSION 29).
-#                             No darwin-amd64: Microsoft publishes no osx-x86_64 build for 1.29.0.
+#   onnxruntime 1.23.2 (CPU)  MIT. Must equal the C API header version of the Go binding
+#                             github.com/yalue/onnxruntime_go v1.25.0 (ORT_API_VERSION 23).
+#                             1.23.2 is the last release with an osx-x86_64 build (Intel Macs).
 #   ffmpeg 9.0.2              linux/windows: BtbN "lgpl-shared" build, LGPL v3 (configure has
 #                             --enable-version3, no --enable-gpl/--enable-nonfree), loaded as shared
-#                             libs. darwin-arm64: martin-riedl.de static build, **GPL v3** (no LGPL
+#                             libs. darwin-*: martin-riedl.de static build, **GPL v3** (no LGPL
 #                             prebuilt for macOS arm64 exists; D-9 makes macOS internal-only).
 #                             ffmpeg runs as a separate process, our code is not linked to it.
 #   Silero VAD v6.2.3         MIT.   ECAPA VoxLingua107 ONNX: Apache-2.0.
@@ -28,11 +28,12 @@
 # archive to our GitHub Release (sha256 stays the same) or bump the pin.
 set -euo pipefail
 
-ORT_VER=1.29.0
+ORT_VER=1.23.2
 ORT_URL=https://github.com/microsoft/onnxruntime/releases/download/v$ORT_VER
-ORT_LINUX_AMD64_SHA=c3fddc4f139a045b0c4902c57410f0694f1c2fdf9b6939fbe38b1aeae7cd14ba
-ORT_WINDOWS_AMD64_SHA=c9b4b7086b529ad814f428c1bad028e20a25d7dc0699836775faace4ab5b78b2
-ORT_DARWIN_ARM64_SHA=d0706fc34f315d8c88639d0a8c81f2e09e815f282cabed3493c06a054352cf92
+ORT_LINUX_AMD64_SHA=1fa4dcaef22f6f7d5cd81b28c2800414350c10116f5fdd46a2160082551c5f9b
+ORT_WINDOWS_AMD64_SHA=0b38df9af21834e41e73d602d90db5cb06dbd1ca618948b8f1d66d607ac9f3cd
+ORT_DARWIN_ARM64_SHA=b4d513ab2b26f088c66891dbbc1408166708773d7cc4163de7bdca0e9bbb7856
+ORT_DARWIN_AMD64_SHA=d10359e16347b57d9959f7e80a225a5b4a66ed7d7e007274a15cae86836485a6
 
 BTBN_TAG=autobuild-2026-10-18-13-01
 BTBN_REL=ffmpeg-n9.0.2-28-g669f5ab083
@@ -42,6 +43,9 @@ FFMPEG_WINDOWS_AMD64_SHA=bc5a0e82b643605ae067f10aacdb4fcd27747779deefa52275d6006
 MR_URL=https://ffmpeg.martin-riedl.de/download/macos/arm64/1789931890_9.0.2
 FFMPEG_DARWIN_ARM64_SHA=c8ed4c4e6978a03c485edbfe4e0a5dc2380f8a30bba5150531b31b094492d924
 FFPROBE_DARWIN_ARM64_SHA=fcbe839537485eaee7a7a8bc5cbc0f90d53617e80943e8a5b2e31cb851197ea6
+MR_URL_AMD64=https://ffmpeg.martin-riedl.de/download/macos/amd64/1789931006_9.0.2
+FFMPEG_DARWIN_AMD64_SHA=7c6b4125b191cbf773832dc51f424cf2b6bb7da43007d1e066f95909e47cacd4
+FFPROBE_DARWIN_AMD64_SHA=2322438ed2f6319a691291b247d09c69dcaa3a982460d1f269a7e1af335cfdfd
 
 HF_REV=e02e1da805ae49635fe1aa7913c3f1e7f5f5fde6   # christopherthompson81/voxlingua107-lid-onnx
 HF_URL=https://huggingface.co/christopherthompson81/voxlingua107-lid-onnx/resolve/$HF_REV
@@ -119,6 +123,10 @@ fetch_ort() { # target dest
       fetch "$ORT_URL/onnxruntime-osx-arm64-$ORT_VER.tgz" $ORT_DARWIN_ARM64_SHA; tar -xzf "$FETCHED" -C "$tmp"
       cp "$tmp/onnxruntime-osx-arm64-$ORT_VER/lib/libonnxruntime.$ORT_VER.dylib" "$dest/onnxruntime/"
       ort_licenses "$tmp/onnxruntime-osx-arm64-$ORT_VER" "$dest" ;;
+    darwin-amd64)
+      fetch "$ORT_URL/onnxruntime-osx-x86_64-$ORT_VER.tgz" $ORT_DARWIN_AMD64_SHA; tar -xzf "$FETCHED" -C "$tmp"
+      cp "$tmp/onnxruntime-osx-x86_64-$ORT_VER/lib/libonnxruntime.$ORT_VER.dylib" "$dest/onnxruntime/"
+      ort_licenses "$tmp/onnxruntime-osx-x86_64-$ORT_VER" "$dest" ;;
   esac
   rm -rf "$tmp"
 }
@@ -143,12 +151,17 @@ fetch_ffmpeg() { # target dest
       local d; d=$(echo "$tmp"/ffmpeg-*)
       cp "$d/bin/ffmpeg.exe" "$d/bin/ffprobe.exe" "$d/bin/"*.dll "$dest/ffmpeg/bin/"
       cp "$d/LICENSE.txt" "$dest/licenses/ffmpeg-LICENSE.txt" ;;
-    darwin-arm64)
-      fetch "$MR_URL/ffmpeg.zip" $FFMPEG_DARWIN_ARM64_SHA; unzip_to "$FETCHED" "$tmp"
-      fetch "$MR_URL/ffprobe.zip" $FFPROBE_DARWIN_ARM64_SHA; unzip_to "$FETCHED" "$tmp"
+    darwin-arm64|darwin-amd64)
+      if [ "$t" = darwin-arm64 ]; then
+        fetch "$MR_URL/ffmpeg.zip" $FFMPEG_DARWIN_ARM64_SHA; unzip_to "$FETCHED" "$tmp"
+        fetch "$MR_URL/ffprobe.zip" $FFPROBE_DARWIN_ARM64_SHA; unzip_to "$FETCHED" "$tmp"
+      else
+        fetch "$MR_URL_AMD64/ffmpeg.zip" $FFMPEG_DARWIN_AMD64_SHA; unzip_to "$FETCHED" "$tmp"
+        fetch "$MR_URL_AMD64/ffprobe.zip" $FFPROBE_DARWIN_AMD64_SHA; unzip_to "$FETCHED" "$tmp"
+      fi
       cp "$tmp/ffmpeg" "$tmp/ffprobe" "$dest/ffmpeg/bin/"
       chmod +x "$dest/ffmpeg/bin/ffmpeg" "$dest/ffmpeg/bin/ffprobe"
-      echo "ffmpeg for darwin-arm64 is GPL v3 (martin-riedl.de static build, FFmpeg 9.0.2); source and build script: https://ffmpeg.martin-riedl.de" > "$dest/licenses/ffmpeg-NOTICE.txt" ;;
+      echo "ffmpeg for $t is GPL v3 (martin-riedl.de static build, FFmpeg 9.0.2); source and build script: https://ffmpeg.martin-riedl.de" > "$dest/licenses/ffmpeg-NOTICE.txt" ;;
   esac
   rm -rf "$tmp"
 }
@@ -162,10 +175,10 @@ host_target() {
 
 targets=("$@")
 [ ${#targets[@]} -eq 0 ] && targets=("$(host_target)")
-[ "${targets[0]}" = all ] && targets=(linux-amd64 windows-amd64 darwin-arm64)
+[ "${targets[0]}" = all ] && targets=(linux-amd64 windows-amd64 darwin-arm64 darwin-amd64)
 
 for t in "${targets[@]}"; do
-  case $t in linux-amd64|windows-amd64|darwin-arm64) ;; *) echo "unsupported target $t (darwin-amd64: no onnxruntime $ORT_VER build exists)" >&2; exit 1 ;; esac
+  case $t in linux-amd64|windows-amd64|darwin-arm64|darwin-amd64) ;; *) echo "unsupported target $t" >&2; exit 1 ;; esac
   dest=$ROOT/third_party/$t
   echo "== $t -> $dest"
   rm -rf "$dest.tmp"; mkdir -p "$dest.tmp"   # build aside, swap in only when everything verified
