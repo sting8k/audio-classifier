@@ -18,10 +18,10 @@ const DefaultInterval = 250 * time.Millisecond
 // recentMax is how many newest results a Progress snapshot carries.
 const recentMax = 5
 
-// autoWorkers is the pool size when Settings.Workers is 0. Placeholder
-// (half the cores, since each in-flight clip runs ffmpeg plus a model pass)
-// until the engine's workers/threads measurement says otherwise: retune here.
-func autoWorkers() int { return max(1, runtime.NumCPU()/2) }
+// autoWorkers is the pool size when Settings.Workers is 0: one per core. In the
+// engine benchmark (6 cores, 1 ORT thread per clip) 6 workers were fastest and 5
+// within noise; per-worker speed drops as workers grow, so this is not linear.
+func autoWorkers() int { return runtime.NumCPU() }
 
 var errBusy = errors.New("a run is already in progress")
 

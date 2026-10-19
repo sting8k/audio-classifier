@@ -28,7 +28,8 @@ Second-best language: show the model's 2nd-highest class and its probability as 
 ## Pipeline (per clip)
 
 1. **Decode** with bundled ffmpeg, audio only, first 30 s, straight to raw PCM on stdout:
-   `ffmpeg -nostdin -hide_banner -loglevel error -t 30 -i <file> -map 0:a:0 -vn -sn -dn -ac 1 -ar 16000 -f f32le pipe:1`
+   `ffmpeg -nostdin -hide_banner -loglevel info -nostats -t 30 -i file:<path> -map 0:a:0 -vn -sn -dn -ac 1 -ar 16000 -f f32le pipe:1`
+   (`-loglevel info` so the same run prints `Duration:`, no ffprobe; `file:` so a name is never read as an option or protocol.)
    (`-t` before `-i` stops reading input after 30 s; `-map 0:a:0` picks the first audio track only.)
    No audio stream / decode failure → status `error`.
 2. **VAD**: Silero VAD (ONNX, same onnxruntime). Keep speech regions only.
