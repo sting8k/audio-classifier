@@ -82,6 +82,6 @@ type ExportRequest struct {
 	Format string   `json:"format"` // "json" | "csv"
 	Paths  []string `json:"paths"`
 	Fields []string `json:"fields"` // ClipResult JSON tag names to include
-	BOM    bool     `json:"bom"`    // CSV only: UTF-8 BOM for Excel
+	BOM    bool     `json:"bom"`    // CSV only: "for Excel" = UTF-8 BOM + ';' delimiter
 	Out    string   `json:"out"`    // destination file path
 }
