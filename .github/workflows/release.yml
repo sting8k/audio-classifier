@@ -90,4 +90,4 @@ jobs:
         run: |
           gh release create "$TAG" dist/* --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
             --prerelease --title "$TAG (dev build)" \
-            --notes "Dev build, untested on Windows/macOS. macOS: unsigned, run \`xattr -cr LangIDBatch.app\` once (SPEC D-9). Windows needs the WebView2 runtime (built into Windows 11)."
+            --notes "Dev build, untested on Windows/macOS. macOS: unsigned, run \`xattr -cr \"LangID Batch.app\"\` once (SPEC D-9). Windows needs the WebView2 runtime (built into Windows 11)."
