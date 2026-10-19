@@ -1,4 +1,290 @@
+/* Design tokens and shared primitives, taken from docs/wireframe. Screen-specific layout lives in each component. */
+:root {
+  --bg: #f2f2ef;
+  --card: #ffffff;
+  --text: #1a1a1a;
+  --muted: #5a5a57;
+  --line: #e4e4e0;
+  --border: #d4d4cf;
+  --input-border: #c2c2bd;
+  --subtle: #fafaf8;
+  --track: #e7e7e3;
+  --primary: #1f4fbf;
+  --primary-dark: #163a8f;
+  --primary-bg: #e3eaf8;
+  --primary-light: #6b8ddb;
+  --ok-bg: #e6efe3;
+  --ok: #2b5a25;
+  --review-bg: #fbebda;
+  --review: #8a4500;
+  --nospeech-bg: #ededea;
+  --nospeech: #4a4a47;
+  --error-bg: #f8e1de;
+  --error: #a3261b;
+  --sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  font-family: system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+h1 {
+  font-size: 20px;
+  font-weight: 600;
+}
+h2 {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+button {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: not-allowed;
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.mono {
+  font-family: var(--mono);
+}
+.muted {
+  color: var(--muted);
+}
+.small {
+  font-size: 12px;
+}
+.right {
+  text-align: right;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Cards */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  min-width: 0;
+}
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 8px;
+  border: 1px solid var(--input-border);
+  background: var(--card);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.btn:hover:not(:disabled) {
+  background: var(--subtle);
+}
+.btn:disabled {
+  opacity: 0.5;
+}
+.btn.primary {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+  font-weight: 600;
+}
+.btn.primary:hover:not(:disabled) {
+  background: var(--primary-dark);
+}
+.btn.outline {
+  border-color: var(--primary);
+  color: var(--primary);
+  font-weight: 600;
+}
+.btn.danger {
+  color: var(--error);
+}
+.btn.big {
+  height: 48px;
+}
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+}
+.icon-btn:hover {
+  background: var(--track);
+  color: var(--text);
+}
+
+/* Form controls */
+.input {
+  height: 40px;
+  padding: 0 10px;
+  border: 1px solid var(--input-border);
+  border-radius: 8px;
+  background: var(--card);
+  min-width: 0;
+}
+input[type='checkbox'],
+input[type='radio'] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--primary);
+  flex: none;
+}
+.check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 36px;
+  cursor: pointer;
+}
+fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+legend {
+  padding: 0;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+/* Tables */
+.table-wrap {
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+th,
+td {
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+  vertical-align: middle;
+}
+th {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  background: var(--subtle);
+}
+tbody tr:last-child td {
+  border-bottom: 0;
+}
+th.right,
+td.right {
+  text-align: right;
+}
+.trunc {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Status badges */
+.badge {
+  display: inline-flex;
+  max-width: 100%;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.badge.ok {
+  background: var(--ok-bg);
+  color: var(--ok);
+}
+.badge.review {
+  background: var(--review-bg);
+  color: var(--review);
+}
+.badge.no_speech {
+  background: var(--nospeech-bg);
+  color: var(--nospeech);
+}
+.badge.error {
+  background: var(--error-bg);
+  color: var(--error);
+}
+
+/* Progress bars */
+.bar {
+  height: 8px;
+  background: var(--track);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.bar > div {
+  height: 100%;
+  background: var(--primary);
+  transition: width 0.25s ease;
+}
+
+.alert {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--error-bg);
+  color: var(--error);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar > div {
+    transition: none;
+  }
 }
