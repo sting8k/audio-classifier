@@ -1,0 +1,93 @@
+# Builds the app with its bundled assets (SPEC D-6) for each target and publishes a GitHub prerelease.
+# Run: push a tag "v*" or "dev-*", or start it by hand (workflow_dispatch) with a tag name.
+name: release
+
+on:
+  push:
+    tags: ["v*", "dev-*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to create (e.g. dev-20261019)"
+        required: true
+
+permissions:
+  contents: write
+
+env:
+  TAG: ${{ github.event.inputs.tag || github.ref_name }}
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-24.04, plat: linux-amd64, tags: "-tags webkit2_41" }
+          - { os: windows-2022, plat: windows-amd64, tags: "" }
+          - { os: macos-14, plat: darwin-arm64, tags: "" }
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Linux build deps
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev
+      - run: go install github.com/wailsapp/wails/v2/cmd/wails@v2.17.0
+      - name: Fetch pinned assets
+        run: scripts/fetch-assets.sh ${{ matrix.plat }}
+      - name: Build
+        run: wails build -clean ${{ matrix.tags }}
+      - name: Package
+        run: |
+          set -euo pipefail
+          name=LangIDBatch-$TAG-${{ matrix.plat }}
+          mkdir -p dist-pkg
+          case "${{ matrix.plat }}" in
+            darwin-*)
+              app=$(ls -d build/bin/*.app)
+              mkdir -p "$app/Contents/MacOS/third_party"
+              cp -R third_party/${{ matrix.plat }} "$app/Contents/MacOS/third_party/"
+              # Adding files breaks the bundle's ad-hoc seal; re-sign ad-hoc (no Apple account, D-9).
+              codesign --force --deep -s - "$app"
+              ditto -c -k --keepParent "$app" dist-pkg/$name.zip ;;
+            windows-*)
+              mkdir -p "pkg/$name/third_party"
+              cp build/bin/LangIDBatch.exe "pkg/$name/"
+              cp -R third_party/${{ matrix.plat }} "pkg/$name/third_party/"
+              (cd pkg && 7z a -tzip ../dist-pkg/$name.zip "$name" >/dev/null) ;;
+            linux-*)
+              mkdir -p "pkg/$name/third_party"
+              cp build/bin/LangIDBatch "pkg/$name/"
+              cp -R third_party/${{ matrix.plat }} "pkg/$name/third_party/"
+              tar -C pkg -czf dist-pkg/$name.tar.gz "$name" ;;
+          esac
+          ls -lh dist-pkg
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.plat }}
+          path: dist-pkg/*
+
+  publish:
+    needs: build
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - name: Create prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$TAG" dist/* --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+            --prerelease --title "$TAG (dev build)" \
+            --notes "Dev build, untested on Windows/macOS. macOS: unsigned, run \`xattr -cr LangIDBatch.app\` once (SPEC D-9). Windows needs the WebView2 runtime (built into Windows 11)."
