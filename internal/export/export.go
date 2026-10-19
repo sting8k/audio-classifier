@@ -11,6 +11,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/sting8k/audio-classifier/internal/lid"
@@ -133,12 +134,19 @@ func selectRows(rows []lid.ClipResult, paths []string) []lid.ClipResult {
 	return out
 }
 
-func encodeCSV(buf *bytes.Buffer, cols []column, rows []lid.ClipResult, bom bool) error {
-	if bom {
-		buf.WriteString("\ufeff") // EF BB BF: Excel on Windows needs it to read UTF-8
+// encodeCSV writes RFC 4180 CSV. excel (ExportRequest.BOM) adds a UTF-8 BOM,
+// which Excel on Windows needs to read UTF-8, and switches the delimiter to
+// ';': Excel splits on the Windows list separator, which is ';' wherever the
+// decimal separator is a comma (e.g. Vietnamese).
+func encodeCSV(buf *bytes.Buffer, cols []column, rows []lid.ClipResult, excel bool) error {
+	if excel {
+		buf.WriteString("\ufeff")
 	}
 	w := csv.NewWriter(buf)
 	w.UseCRLF = true
+	if excel {
+		w.Comma = ';'
+	}
 	rec := make([]string, len(cols))
 	for i, c := range cols {
 		rec[i] = c.name
@@ -152,7 +160,7 @@ func encodeCSV(buf *bytes.Buffer, cols []column, rows []lid.ClipResult, bom bool
 			case nil:
 				rec[i] = ""
 			case string:
-				rec[i] = v
+				rec[i] = neutralise(v)
 			case float64:
 				rec[i] = strconv.FormatFloat(v, 'f', -1, 64)
 			}
@@ -163,6 +171,16 @@ func encodeCSV(buf *bytes.Buffer, cols []column, rows []lid.ClipResult, bom bool
 	}
 	w.Flush()
 	return w.Error()
+}
+
+// neutralise keeps Excel from running a cell as a formula: file names come from
+// outside, and "=cmd|..." in a name would execute when the CSV is opened. A
+// leading ' makes it text. CSV only; JSON keeps every value as is.
+func neutralise(s string) string {
+	if s != "" && strings.IndexByte("=+-@", s[0]) >= 0 {
+		return "'" + s
+	}
+	return s
 }
 
 // jsonRow is a clip with its keys in column order (a map would sort them).

@@ -42,23 +42,27 @@ func export(t *testing.T, req lid.ExportRequest, rs []lid.ClipResult) []byte {
 	return b
 }
 
-func readCSV(t *testing.T, b []byte) [][]string {
+func readCSV(t *testing.T, b []byte, comma rune) [][]string {
 	t.Helper()
-	recs, err := csv.NewReader(bytes.NewReader(bytes.TrimPrefix(b, []byte("\ufeff")))).ReadAll()
+	r := csv.NewReader(bytes.NewReader(bytes.TrimPrefix(b, []byte("\ufeff"))))
+	r.Comma = comma
+	recs, err := r.ReadAll()
 	if err != nil {
 		t.Fatal(err)
 	}
 	return recs
 }
 
-func TestCSVFieldSelectionAndBOM(t *testing.T) {
+// "For Excel" (BOM) means BOM and ';'; off means plain UTF-8 and ','.
+// readCSV is told the delimiter, so parsing with the wrong one fails the test.
+func TestCSVFieldSelectionAndExcelMode(t *testing.T) {
 	// Fields arrive in UI order; the file keeps the canonical order.
 	req := lid.ExportRequest{Format: "csv", Fields: []string{"status", "file", "confidence"}, BOM: true}
 	b := export(t, req, rows())
 	if !bytes.HasPrefix(b, []byte{0xEF, 0xBB, 0xBF}) {
 		t.Fatal("BOM requested but missing")
 	}
-	recs := readCSV(t, b)
+	recs := readCSV(t, b, ';')
 	if want := []string{"file", "confidence", "status"}; !reflect.DeepEqual(recs[0], want) {
 		t.Errorf("header = %v, want %v", recs[0], want)
 	}
@@ -70,20 +74,48 @@ func TestCSVFieldSelectionAndBOM(t *testing.T) {
 	}
 
 	req.BOM = false
-	if b := export(t, req, rows()); bytes.HasPrefix(b, []byte{0xEF}) {
+	b = export(t, req, rows())
+	if bytes.HasPrefix(b, []byte{0xEF}) {
 		t.Error("BOM present although not requested")
 	}
+	if recs := readCSV(t, b, ','); !reflect.DeepEqual(recs[1], []string{"tiếng Việt, \"1\".mp3", "0.9712", "ok"}) {
+		t.Errorf("without BOM the delimiter must be ',': row 1 = %q", recs[1])
+	}
 	req.Fields = nil
-	if recs := readCSV(t, export(t, req, rows())); !reflect.DeepEqual(recs[0], Fields) {
+	if recs := readCSV(t, export(t, req, rows()), ','); !reflect.DeepEqual(recs[0], Fields) {
 		t.Errorf("default header = %v, want all of %v", recs[0], Fields)
 	}
 }
 
 func TestCSVRoundsToExportPrecision(t *testing.T) {
 	r := []lid.ClipResult{{Folder: "/a", File: "x.mp3", DurationS: f(292.123456), Confidence: f(0.97123456), Status: lid.StatusOK}}
-	recs := readCSV(t, export(t, lid.ExportRequest{Format: "csv", Fields: []string{"duration_s", "confidence"}}, r))
+	recs := readCSV(t, export(t, lid.ExportRequest{Format: "csv", Fields: []string{"duration_s", "confidence"}}, r), ',')
 	if want := []string{"292.123", "0.9712"}; !reflect.DeepEqual(recs[1], want) {
 		t.Errorf("row = %v, want %v", recs[1], want)
+	}
+}
+
+// A name that Excel would read as a formula is made text in CSV (leading '),
+// and left exactly as it is in JSON.
+func TestFormulaLikeNamesAreNeutralisedInCSVOnly(t *testing.T) {
+	var in []lid.ClipResult
+	for _, n := range []string{"=cmd.mp3", "+1.mp3", "-2.mp3", "@x.mp3", "a=b.mp3"} {
+		in = append(in, lid.ClipResult{Folder: "/a", File: n, Path: "/a/" + n, Status: lid.StatusOK})
+	}
+	recs := readCSV(t, export(t, lid.ExportRequest{Format: "csv", Fields: []string{"file"}}, in), ',')
+	want := [][]string{{"file"}, {"'=cmd.mp3"}, {"'+1.mp3"}, {"'-2.mp3"}, {"'@x.mp3"}, {"a=b.mp3"}}
+	if !reflect.DeepEqual(recs, want) {
+		t.Errorf("csv = %q, want %q (only a leading = + - @ is neutralised)", recs, want)
+	}
+
+	var doc struct{ Clips []lid.ClipResult }
+	if err := json.Unmarshal(export(t, lid.ExportRequest{Format: "json", Fields: []string{"file"}}, in), &doc); err != nil {
+		t.Fatal(err)
+	}
+	for i, c := range doc.Clips {
+		if c.File != in[i].File {
+			t.Errorf("json file %d = %q, want %q unchanged", i, c.File, in[i].File)
+		}
 	}
 }
 
@@ -139,11 +171,11 @@ func TestJSONRoundTrip(t *testing.T) {
 
 func TestPathsSelectRows(t *testing.T) {
 	in := rows()
-	recs := readCSV(t, export(t, lid.ExportRequest{Format: "csv", Fields: []string{"file"}, Paths: []string{in[3].Path, in[2].Path, "/nope"}}, in))
+	recs := readCSV(t, export(t, lid.ExportRequest{Format: "csv", Fields: []string{"file"}, Paths: []string{in[3].Path, in[2].Path, "/nope"}}, in), ',')
 	if want := [][]string{{"file"}, {"mute.m4a"}, {"broken.mp3"}}; !reflect.DeepEqual(recs, want) {
 		t.Errorf("selected = %v, want %v (listed rows only, in result order)", recs, want)
 	}
-	if recs := readCSV(t, export(t, lid.ExportRequest{Format: "csv", Fields: []string{"file"}}, in)); len(recs) != 5 {
+	if recs := readCSV(t, export(t, lid.ExportRequest{Format: "csv", Fields: []string{"file"}}, in), ','); len(recs) != 5 {
 		t.Errorf("no Paths gave %d lines, want header + all 4", len(recs))
 	}
 
