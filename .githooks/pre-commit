@@ -1,0 +1,22 @@
+#!/bin/sh
+# Blocks secrets and large/binary assets from being committed.
+# Enable once per clone: git config core.hooksPath .githooks
+set -e
+
+if ! command -v gitleaks >/dev/null 2>&1; then
+  echo "pre-commit: gitleaks not found on PATH; install it (go install github.com/zricethezav/gitleaks/v8@latest)" >&2
+  exit 1
+fi
+gitleaks git --pre-commit --staged --redact --no-banner .
+
+# Models, native libs, ffmpeg and media belong on GitHub Releases, not in git (SPEC D-6).
+max=1048576
+big=$(git diff --cached --name-only --diff-filter=AM | while IFS= read -r f; do
+  size=$(git cat-file -s ":$f" 2>/dev/null || echo 0)
+  if [ "$size" -gt "$max" ]; then echo "  $f ($size bytes)"; fi
+done)
+if [ -n "$big" ]; then
+  echo "pre-commit: files > 1 MiB; large assets go to GitHub Releases:" >&2
+  echo "$big" >&2
+  exit 1
+fi

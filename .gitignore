@@ -1,0 +1,42 @@
+# Bundled runtime assets: fetched at build time, published on GitHub Releases (SPEC D-6)
+/third_party/
+*.onnx
+*.onnx.data
+*.dll
+*.dylib
+*.so
+*.so.*
+ffmpeg
+ffmpeg.exe
+ffprobe
+ffprobe.exe
+
+# Build output
+/build/bin/
+/frontend/dist/
+/frontend/node_modules/
+node_modules/
+
+# Local test media (may be customer content)
+/testdata/media/
+*.mp3
+*.mp4
+*.m4a
+*.mov
+*.wav
+*.aac
+*.flac
+*.ogg
+
+# Secrets / local config
+.env
+.env.*
+*.pem
+*.key
+*.p12
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
