@@ -16,12 +16,13 @@ Where the wireframe and this spec disagree, **this spec wins** (see D-1).
 | D-4 | GUI: **Wails** (Go backend, web frontend in the OS webview). Needs real paths: folder drag-drop, native folder picker, "open file location". | No local-webapp-in-browser, no Fyne/Gio. |
 | D-5 | **CPU only.** | No GPU option / device selector, no GPU onnxruntime builds. |
 | D-6 | Ship everything needed offline: model, Silero VAD model, onnxruntime shared lib, ffmpeg. Binaries/models are fetched at build time and published on GitHub Releases, not committed to git. | No first-run model download. |
-| D-7 | Confidence threshold default **0.60** (a guess, not measured), user-editable. Below it → status "Cần xem lại" (review). | Don't present 0.60 as validated. |
+| D-7 | Confidence threshold default **0.60** (a guess, not measured), user-editable. Below it → status "Needs review" (`review`). | Don't present 0.60 as validated. |
 | D-8 | ffmpeg bundled, invoked with tuned args (see Pipeline). | — |
 | D-9 | macOS is internal use only, **no Apple Developer account**: unsigned/ad-hoc signed app; users clear quarantine manually. | No notarization work. |
 | D-10 | Frontend: **Svelte + TypeScript** (Wails v2 template, Wails v2.17.x — v3 is still beta). Plain CSS following the wireframe; IBM Plex fonts bundled locally (app is offline). | No UI component library, no state library, no router, no table virtualization (results are paginated); no web-font CDN; no Wails v3 until it is stable. |
+| D-11 | All user-facing text is **English**: UI labels, status names, error messages written by the app. The wireframe's Vietnamese labels are translated, layout unchanged. | No Vietnamese UI strings, no i18n/language switcher. File and folder names are shown as they are. |
 
-Second-best language: show the model's 2nd-highest class and its probability as "Lựa chọn thứ 2"
+Second-best language: show the model's 2nd-highest class and its probability as "2nd choice"
 (it is NOT a share of speech time).
 
 ## Pipeline (per clip)
@@ -39,7 +40,7 @@ Clips run in parallel through a bounded worker pool (one ffmpeg process per in-f
 
 ## Statuses
 
-`ok` · `review` (Cần xem lại) · `no_speech` (Không có giọng nói) · `error` (Lỗi: message).
+`ok` · `review` (Needs review) · `no_speech` (No speech) · `error` (Error: message).
 
 ## Inputs
 

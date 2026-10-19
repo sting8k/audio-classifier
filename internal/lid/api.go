@@ -45,7 +45,7 @@ type Summary struct {
 	Error    int `json:"error"`
 }
 
-// FolderProgress is one row of "Theo thư mục" on screen 2.
+// FolderProgress is one row of "By folder" on screen 2.
 type FolderProgress struct {
 	Path  string `json:"path"`
 	Name  string `json:"name"`
