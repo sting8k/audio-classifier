@@ -1,0 +1,18 @@
+{
+  "v": 3,
+  "createdOnFiles": {"v": 1, "at": "2026-10-19T04:50:00Z"},
+  "title": "Audio Language ID – Wireframe",
+  "launch": {"view": "canvas"},
+  "pages": [],
+  "boards": {
+    "Main.dc.html": {"x": 0, "y": 0, "w": 1280, "h": 900, "title": "1 · Chọn thư mục", "expand": "fill", "is_interactive": true},
+    "Processing.dc.html": {"x": 1360, "y": 0, "w": 1280, "h": 900, "title": "2 · Đang nhận diện", "expand": "fill", "is_interactive": true},
+    "Results.dc.html": {"x": 2720, "y": 0, "w": 1280, "h": 1120, "title": "3 · Kết quả", "expand": "fill", "is_interactive": true},
+    "Export.dc.html": {"x": 4080, "y": 0, "w": 1280, "h": 1120, "title": "4 · Export JSON / CSV", "expand": "fill", "is_interactive": true}
+  },
+  "order": ["Main.dc.html", "Processing.dc.html", "Results.dc.html", "Export.dc.html"],
+  "notes": {
+    "flow": {"x": 0, "y": -300, "text": "LangID Batch — luồng 4 màn hình (PC + Mac)", "kind": "title1", "maxW": 5360}
+  },
+  "designSystems": []
+}

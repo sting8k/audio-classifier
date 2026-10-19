@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Chọn thư mục</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#1F4FBF}a:hover{color:#163A8F}
+table{border-collapse:collapse;width:100%}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid #E4E4E0;white-space:nowrap;vertical-align:middle}
+th{font-size:12px;font-weight:500;color:#5A5A57;background:#FAFAF8}
+</style>
+</helmet>
+<div style="background: #F2F2EF; color: #1A1A1A; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14px; line-height: 1.45; min-height: 100vh">
+  <header style="background: #FFFFFF; border-bottom: 1px solid #D4D4CF">
+    <div style="max-width: 1280px; margin: 0 auto; padding: 8px 24px; box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px">
+      <div style="display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 15px">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 12h2M7 8v8M11 5v14M15 9v6M19 11v2"></path></svg>
+        <span>LangID Batch</span>
+      </div>
+      <nav aria-label="Các bước" style="display: flex; flex-wrap: wrap; gap: 4px; flex: 1 1 auto">
+        <a href="Main.dc.html" aria-current="page" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; border-radius: 8px; background: #E3EAF8; color: #1F4FBF; font-weight: 600; text-decoration: none"><span style="display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; border: 1px solid currentColor; font-size: 12px">1</span>Chọn thư mục</a>
+        <a href="Processing.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; border-radius: 8px; color: #5A5A57; text-decoration: none"><span style="display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; border: 1px solid currentColor; font-size: 12px">2</span>Nhận diện</a>
+        <a href="Results.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; border-radius: 8px; color: #5A5A57; text-decoration: none"><span style="display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; border: 1px solid currentColor; font-size: 12px">3</span>Kết quả</a>
+        <a href="Export.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; border-radius: 8px; color: #5A5A57; text-decoration: none"><span style="display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; border: 1px solid currentColor; font-size: 12px">4</span>Export</a>
+      </nav>
+      <span style="display: inline-flex; align-items: center; padding: 6px 10px; border: 1px solid #D4D4CF; border-radius: 999px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5A5A57">speechbrain · voxlingua107-ecapa</span>
+    </div>
+  </header>
+
+  <main style="max-width: 1280px; margin: 0 auto; padding: 24px; box-sizing: border-box; display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+    <section aria-labelledby="h-input" style="flex: 999 1 560px; min-width: 0; background: #FFFFFF; border: 1px solid #D4D4CF; border-radius: 12px; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px">
+        <div>
+          <h1 id="h-input" style="margin: 0; font-size: 20px; font-weight: 600">Thư mục đầu vào</h1>
+          <p style="margin: 4px 0 0; color: #5A5A57">Mỗi thư mục được quét để tìm clip audio/video cần nhận diện ngôn ngữ.</p>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px">
+          <button type="button" style="height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid #C2C2BD; background: #FFFFFF; color: #1A1A1A; font: inherit; font-weight: 500; cursor: pointer">Xoá đã chọn</button>
+          <button type="button" style="height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid #1F4FBF; background: #FFFFFF; color: #1F4FBF; font: inherit; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Thêm thư mục</button>
+        </div>
+      </div>
+
+      <div style="border: 2px dashed #B9B9B3; border-radius: 10px; background: #FAFAF8; padding: 28px 20px; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; color: #5A5A57">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+        <div style="font-size: 15px; font-weight: 500; color: #1A1A1A">Kéo thả một hoặc nhiều thư mục vào đây</div>
+        <div>hoặc bấm “Thêm thư mục” để chọn bằng Finder / File Explorer</div>
+      </div>
+
+      <div style="overflow-x: auto; border: 1px solid #E4E4E0; border-radius: 8px">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 44px"><input type="checkbox" aria-label="Chọn tất cả thư mục" style="width: 18px; height: 18px; accent-color: #1F4FBF"></th>
+              <th>Thư mục</th>
+              <th style="text-align: right">Clip hợp lệ</th>
+              <th>Bỏ qua</th>
+              <th style="text-align: right">Tổng thời lượng</th>
+              <th style="width: 56px">Xoá</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input type="checkbox" aria-label="Chọn 2026-T09" style="width: 18px; height: 18px; accent-color: #1F4FBF"></td>
+              <td><div style="font-weight: 500">2026-T09</div><div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5A5A57">/Volumes/Data/Ads/2026-T09</div></td>
+              <td style="text-align: right; font-family: 'IBM Plex Mono', monospace">42</td>
+              <td style="color: #5A5A57">3 file (.txt, .jpg)</td>
+              <td style="text-align: right; font-family: 'IBM Plex Mono', monospace">3h 28m</td>
+              <td><button type="button" aria-label="Xoá thư mục 2026-T09" style="width: 44px; height: 44px; border: 0; border-radius: 8px; background: transparent; color: #5A5A57; cursor: pointer; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" aria-label="Chọn Doi_tac_A" style="width: 18px; height: 18px; accent-color: #1F4FBF"></td>
+              <td><div style="font-weight: 500">Doi_tac_A</div><div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5A5A57">/Volumes/Data/Ads/Doi_tac_A</div></td>
+              <td style="text-align: right; font-family: 'IBM Plex Mono', monospace">118</td>
+              <td style="color: #5A5A57">—</td>
+              <td style="text-align: right; font-family: 'IBM Plex Mono', monospace">9h 50m</td>
+              <td><button type="button" aria-label="Xoá thư mục Doi_tac_A" style="width: 44px; height: 44px; border: 0; border-radius: 8px; background: transparent; color: #5A5A57; cursor: pointer; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" aria-label="Chọn Doi_tac_B" style="width: 18px; height: 18px; accent-color: #1F4FBF"></td>
+              <td><div style="font-weight: 500">Doi_tac_B</div><div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5A5A57">/Volumes/Data/Ads/Doi_tac_B</div></td>
+              <td style="text-align: right; font-family: 'IBM Plex Mono', monospace">27</td>
+              <td style="color: #5A5A57">1 file (.psd)</td>
+              <td style="text-align: right; font-family: 'IBM Plex Mono', monospace">2h 15m</td>
+              <td><button type="button" aria-label="Xoá thư mục Doi_tac_B" style="width: 44px; height: 44px; border: 0; border-radius: 8px; background: transparent; color: #5A5A57; cursor: pointer; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p style="margin: 0; color: #5A5A57">3 thư mục · <strong style="color: #1A1A1A; font-weight: 600">187 clip</strong> · khoảng 15 giờ 33 phút audio</p>
+    </section>
+
+    <aside aria-labelledby="h-settings" style="flex: 1 1 320px; min-width: 0; background: #FFFFFF; border: 1px solid #D4D4CF; border-radius: 12px; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 18px">
+      <h2 id="h-settings" style="margin: 0; font-size: 16px; font-weight: 600">Thiết lập nhận diện</h2>
+
+      <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px">
+        <legend style="padding: 0; margin-bottom: 8px; font-weight: 500">Định dạng file</legend>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px">
+          <label style="display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 12px; border: 1px solid #D4D4CF; border-radius: 999px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; cursor: pointer"><input type="checkbox" checked style="accent-color: #1F4FBF">mp3</label>
+          <label style="display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 12px; border: 1px solid #D4D4CF; border-radius: 999px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; cursor: pointer"><input type="checkbox" checked style="accent-color: #1F4FBF">wav</label>
+          <label style="display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 12px; border: 1px solid #D4D4CF; border-radius: 999px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; cursor: pointer"><input type="checkbox" checked style="accent-color: #1F4FBF">m4a</label>
+          <label style="display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 12px; border: 1px solid #D4D4CF; border-radius: 999px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; cursor: pointer"><input type="checkbox" checked style="accent-color: #1F4FBF">aac</label>
+          <label style="display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 12px; border: 1px solid #D4D4CF; border-radius: 999px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; cursor: pointer"><input type="checkbox" checked style="accent-color: #1F4FBF">flac</label>
+          <label style="display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 12px; border: 1px solid #D4D4CF; border-radius: 999px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; cursor: pointer"><input type="checkbox" checked style="accent-color: #1F4FBF">ogg</label>
+          <label style="display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 12px; border: 1px solid #D4D4CF; border-radius: 999px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; cursor: pointer"><input type="checkbox" checked style="accent-color: #1F4FBF">mp4</label>
+          <label style="display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 12px; border: 1px solid #D4D4CF; border-radius: 999px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; cursor: pointer"><input type="checkbox" style="accent-color: #1F4FBF">mov</label>
+        </div>
+        <p style="margin: 0; font-size: 12px; color: #5A5A57">Đọc file qua ffmpeg đóng gói kèm app; video chỉ lấy track audio.</p>
+      </fieldset>
+
+      <label style="display: flex; align-items: center; gap: 10px; min-height: 44px; font-weight: 500; cursor: pointer"><input type="checkbox" checked style="width: 18px; height: 18px; accent-color: #1F4FBF">Quét cả thư mục con</label>
+
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 12px">
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <label for="seg-len" style="font-weight: 500">Độ dài mỗi đoạn</label>
+          <div style="display: flex; align-items: center; gap: 8px"><input id="seg-len" type="number" value="10" min="3" max="30" style="flex: 1 1 auto; min-width: 0; height: 44px; box-sizing: border-box; padding: 0 10px; border: 1px solid #C2C2BD; border-radius: 8px; font: inherit; font-family: 'IBM Plex Mono', monospace; background: #FFFFFF; color: #1A1A1A"><span style="color: #5A5A57">giây</span></div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <label for="seg-min" style="font-weight: 500">Bỏ đoạn ngắn hơn</label>
+          <div style="display: flex; align-items: center; gap: 8px"><input id="seg-min" type="number" value="2" min="1" max="10" style="flex: 1 1 auto; min-width: 0; height: 44px; box-sizing: border-box; padding: 0 10px; border: 1px solid #C2C2BD; border-radius: 8px; font: inherit; font-family: 'IBM Plex Mono', monospace; background: #FFFFFF; color: #1A1A1A"><span style="color: #5A5A57">giây</span></div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <label for="conf" style="font-weight: 500">Ngưỡng tin cậy</label>
+          <input id="conf" type="number" value="0.60" min="0" max="1" step="0.05" style="height: 44px; box-sizing: border-box; padding: 0 10px; border: 1px solid #C2C2BD; border-radius: 8px; font: inherit; font-family: 'IBM Plex Mono', monospace; background: #FFFFFF; color: #1A1A1A">
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <label for="device" style="font-weight: 500">Thiết bị chạy</label>
+          <select id="device" style="height: 44px; box-sizing: border-box; padding: 0 8px; border: 1px solid #C2C2BD; border-radius: 8px; font: inherit; background: #FFFFFF; color: #1A1A1A">
+            <option>Tự động (GPU nếu có)</option>
+            <option>Chỉ CPU</option>
+          </select>
+        </div>
+      </div>
+      <p style="margin: -6px 0 0; font-size: 12px; color: #5A5A57">Clip có độ tin cậy dưới ngưỡng được đánh dấu “Cần xem lại”.</p>
+
+      <div style="border-top: 1px solid #E4E4E0; padding-top: 16px; display: flex; flex-direction: column; gap: 10px">
+        <div style="display: flex; justify-content: space-between; gap: 12px; color: #5A5A57"><span>Sẽ xử lý</span><span style="color: #1A1A1A; font-weight: 500">187 clip · ~15h 33m</span></div>
+        <a href="Processing.dc.html" style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 48px; border-radius: 8px; background: #1F4FBF; color: #FFFFFF; font-weight: 600; text-decoration: none"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5v14l12-7z"></path></svg>Bắt đầu nhận diện</a>
+        <p style="margin: 0; font-size: 12px; color: #5A5A57">Lần chạy đầu tải model SpeechBrain về máy, sau đó chạy offline.</p>
+      </div>
+    </aside>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

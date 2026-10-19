@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Kết quả nhận diện</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#1F4FBF}a:hover{color:#163A8F}
+table{border-collapse:collapse;width:100%}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid #E4E4E0;white-space:nowrap;vertical-align:middle}
+th{font-size:12px;font-weight:500;color:#5A5A57;background:#FAFAF8}
+</style>
+</helmet>
+<div style="background: #F2F2EF; color: #1A1A1A; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14px; line-height: 1.45; min-height: 100vh">
+  <header style="background: #FFFFFF; border-bottom: 1px solid #D4D4CF">
+    <div style="max-width: 1280px; margin: 0 auto; padding: 8px 24px; box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px">
+      <div style="display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 15px">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 12h2M7 8v8M11 5v14M15 9v6M19 11v2"></path></svg>
+        <span>LangID Batch</span>
+      </div>
+      <nav aria-label="Các bước" style="display: flex; flex-wrap: wrap; gap: 4px; flex: 1 1 auto">
+        <a href="Main.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; border-radius: 8px; color: #5A5A57; text-decoration: none"><span style="display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; border: 1px solid currentColor; font-size: 12px">1</span>Chọn thư mục</a>
+        <a href="Processing.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; border-radius: 8px; color: #5A5A57; text-decoration: none"><span style="display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; border: 1px solid currentColor; font-size: 12px">2</span>Nhận diện</a>
+        <a href="Results.dc.html" aria-current="page" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; border-radius: 8px; background: #E3EAF8; color: #1F4FBF; font-weight: 600; text-decoration: none"><span style="display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; border: 1px solid currentColor; font-size: 12px">3</span>Kết quả</a>
+        <a href="Export.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; border-radius: 8px; color: #5A5A57; text-decoration: none"><span style="display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; border: 1px solid currentColor; font-size: 12px">4</span>Export</a>
+      </nav>
+      <span style="display: inline-flex; align-items: center; padding: 6px 10px; border: 1px solid #D4D4CF; border-radius: 999px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5A5A57">speechbrain · voxlingua107-ecapa</span>
+    </div>
+  </header>
+
+  <main style="max-width: 1280px; margin: 0 auto; padding: 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px">
+    <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px">
+      <div>
+        <h1 style="margin: 0; font-size: 20px; font-weight: 600">Kết quả nhận diện</h1>
+        <p style="margin: 4px 0 0; color: #5A5A57">3 thư mục · hoàn tất lúc 12:09 · tổng thời gian 18 phút</p>
+      </div>
+      <a href="Export.dc.html" style="display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: 8px; background: #1F4FBF; color: #FFFFFF; font-weight: 600; text-decoration: none"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"></path></svg>Export JSON / CSV</a>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 12px">
+      <div style="flex: 1 1 150px; background: #FFFFFF; border: 1px solid #D4D4CF; border-radius: 12px; padding: 14px 16px">
+        <div style="color: #5A5A57; font-size: 13px">Tổng clip</div>
+        <div style="font-size: 26px; font-weight: 600; font-family: 'IBM Plex Mono', monospace">187</div>
+      </div>
+      <div style="flex: 1 1 150px; background: #FFFFFF; border: 1px solid #D4D4CF; border-radius: 12px; padding: 14px 16px">
+        <div style="color: #5A5A57; font-size: 13px">OK</div>
+        <div style="font-size: 26px; font-weight: 600; font-family: 'IBM Plex Mono', monospace; color: #2B5A25">171</div>
+      </div>
+      <div style="flex: 1 1 150px; background: #FFFFFF; border: 1px solid #D4D4CF; border-radius: 12px; padding: 14px 16px">
+        <div style="color: #5A5A57; font-size: 13px">Cần xem lại</div>
+        <div style="font-size: 26px; font-weight: 600; font-family: 'IBM Plex Mono', monospace; color: #8A4500">9</div>
+      </div>
+      <div style="flex: 1 1 150px; background: #FFFFFF; border: 1px solid #D4D4CF; border-radius: 12px; padding: 14px 16px">
+        <div style="color: #5A5A57; font-size: 13px">Không có giọng nói</div>
+        <div style="font-size: 26px; font-weight: 600; font-family: 'IBM Plex Mono', monospace; color: #4A4A47">5</div>
+      </div>
+      <div style="flex: 1 1 150px; background: #FFFFFF; border: 1px solid #D4D4CF; border-radius: 12px; padding: 14px 16px">
+        <div style="color: #5A5A57; font-size: 13px">Lỗi đọc file</div>
+        <div style="font-size: 26px; font-weight: 600; font-family: 'IBM Plex Mono', monospace; color: #A3261B">2</div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+      <section aria-labelledby="h-list" style="flex: 999 1 600px; min-width: 0; background: #FFFFFF; border: 1px solid #D4D4CF; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+        <h2 id="h-list" style="margin: 0; font-size: 16px; font-weight: 600">Danh sách clip</h2>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+          <label style="flex: 1 1 220px; min-width: 0; display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 12px; box-sizing: border-box; border: 1px solid #C2C2BD; border-radius: 8px; color: #5A5A57">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6"></circle><path d="M20 20l-4.5-4.5"></path></svg>
+            <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap">Tìm clip</span>
+            <input type="search" placeholder="Tìm theo tên clip…" style="flex: 1 1 auto; min-width: 0; border: 0; outline: none; font: inherit; color: #1A1A1A; background: transparent">
+          </label>
+          <label style="display: inline-flex; align-items: center; gap: 6px; color: #5A5A57">Thư mục
+            <select style="height: 44px; padding: 0 8px; border: 1px solid #C2C2BD; border-radius: 8px; font: inherit; background: #FFFFFF; color: #1A1A1A"><option>Tất cả</option><option>2026-T09</option><option>Doi_tac_A</option><option>Doi_tac_B</option></select>
+          </label>
+          <label style="display: inline-flex; align-items: center; gap: 6px; color: #5A5A57">Ngôn ngữ
+            <select style="height: 44px; padding: 0 8px; border: 1px solid #C2C2BD; border-radius: 8px; font: inherit; background: #FFFFFF; color: #1A1A1A"><option>Tất cả</option><option>vi</option><option>en</option><option>zh</option><option>th</option></select>
+          </label>
+          <label style="display: inline-flex; align-items: center; gap: 6px; color: #5A5A57">Trạng thái
+            <select style="height: 44px; padding: 0 8px; border: 1px solid #C2C2BD; border-radius: 8px; font: inherit; background: #FFFFFF; color: #1A1A1A"><option>Tất cả</option><option>OK</option><option>Cần xem lại</option><option>Không có giọng nói</option><option>Lỗi</option></select>
+          </label>
+        </div>
+
+        <div style="overflow-x: auto; border: 1px solid #E4E4E0; border-radius: 8px">
+          <table>
+            <thead>
+              <tr><th>Thư mục</th><th>Clip</th><th style="text-align: right">Thời lượng</th><th>Ngôn ngữ chính</th><th style="text-align: right">Tin cậy</th><th>Ngôn ngữ phụ</th><th>Trạng thái</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="color: #5A5A57">2026-T09</td>
+                <td style="font-family: 'IBM Plex Mono', monospace">spot_001.mp3</td>
+                <td style="text-align: right; font-family: 'IBM Plex Mono', monospace">04:52</td>
+                <td><span style="font-family: 'IBM Plex Mono', monospace; font-weight: 500">vi</span> <span style="color: #5A5A57">Tiếng Việt</span></td>
+                <td style="text-align: right; font-family: 'IBM Plex Mono', monospace">0.97</td>
+                <td style="color: #5A5A57">—</td>
+                <td><span style="display: inline-flex; padding: 2px 10px; border-radius: 999px; background: #E6EFE3; color: #2B5A25; font-size: 12px; font-weight: 500">OK</span></td>
+              </tr>
+              <tr style="background: #E3EAF8">
+                <td style="color: #5A5A57">2026-T09</td>
+                <td style="font-family: 'IBM Plex Mono', monospace; font-weight: 500">spot_002.wav</td>
+                <td style="text-align: right; font-family: 'IBM Plex Mono', monospace">05:10</td>
+                <td><span style="font-family: 'IBM Plex Mono', monospace; font-weight: 500">vi</span> <span style="color: #5A5A57">Tiếng Việt</span></td>
+                <td style="text-align: right; font-family: 'IBM Plex Mono', monospace">0.81</td>
+                <td><span style="font-family: 'IBM Plex Mono', monospace">en</span> <span style="color: #5A5A57">· 22%</span></td>
+                <td><span style="display: inline-flex; padding: 2px 10px; border-radius: 999px; background: #E6EFE3; color: #2B5A25; font-size: 12px; font-weight: 500">OK</span></td>
+              </tr>
+              <tr>
+                <td style="color: #5A5A57">2026-T09</td>
+                <td style="font-family: 'IBM Plex Mono', monospace">spot_003.mp3</td>
+                <td style="text-align: right; font-family: 'IBM Plex Mono', monospace">04:47</td>
+                <td><span style="font-family: 'IBM Plex Mono', monospace; font-weight: 500">en</span> <span style="color: #5A5A57">Tiếng Anh</span></td>
+                <td style="text-align: right; font-family: 'IBM Plex Mono', monospace">0.93</td>
+                <td style="color: #5A5A57">—</td>
+                <td><span style="display: inline-flex; padding: 2px 10px; border-radius: 999px; background: #E6EFE3; color: #2B5A25; font-size: 12px; font-weight: 500">OK</span></td>
+              </tr>
+              <tr>
+                <td style="color: #5A5A57">Doi_tac_A</td>
+                <td style="font-family: 'IBM Plex Mono', monospace">spot_018.mp3</td>
+                <td style="text-align: right; color: #5A5A57">—</td>
+                <td style="color: #5A5A57">—</td>
+                <td style="text-align: right; color: #5A5A57">—</td>
+                <td style="color: #5A5A57">—</td>
+                <td><span style="display: inline-flex; padding: 2px 10px; border-radius: 999px; background: #F8E1DE; color: #A3261B; font-size: 12px; font-weight: 500">Lỗi: không đọc được file</span></td>
+              </tr>
+              <tr>
+                <td style="color: #5A5A57">Doi_tac_A</td>
+                <td style="font-family: 'IBM Plex Mono', monospace">spot_019.m4a</td>
+                <td style="text-align: right; font-family: 'IBM Plex Mono', monospace">05:02</td>
+                <td><span style="font-family: 'IBM Plex Mono', monospace; font-weight: 500">vi</span> <span style="color: #5A5A57">Tiếng Việt</span></td>
+                <td style="text-align: right; font-family: 'IBM Plex Mono', monospace; color: #8A4500">0.58</td>
+                <td><span style="font-family: 'IBM Plex Mono', monospace">th</span> <span style="color: #5A5A57">· 31%</span></td>
+                <td><span style="display: inline-flex; padding: 2px 10px; border-radius: 999px; background: #FBEBDA; color: #8A4500; font-size: 12px; font-weight: 500">Cần xem lại</span></td>
+              </tr>
+              <tr>
+                <td style="color: #5A5A57">Doi_tac_A</td>
+                <td style="font-family: 'IBM Plex Mono', monospace">spot_020.mp3</td>
+                <td style="text-align: right; font-family: 'IBM Plex Mono', monospace">04:58</td>
+                <td style="color: #5A5A57">—</td>
+                <td style="text-align: right; color: #5A5A57">—</td>
+                <td style="color: #5A5A57">—</td>
+                <td><span style="display: inline-flex; padding: 2px 10px; border-radius: 999px; background: #EDEDEA; color: #4A4A47; font-size: 12px; font-weight: 500">Không có giọng nói</span></td>
+              </tr>
+              <tr>
+                <td style="color: #5A5A57">Doi_tac_B</td>
+                <td style="font-family: 'IBM Plex Mono', monospace">promo_07.mp4</td>
+                <td style="text-align: right; font-family: 'IBM Plex Mono', monospace">05:30</td>
+                <td><span style="font-family: 'IBM Plex Mono', monospace; font-weight: 500">zh</span> <span style="color: #5A5A57">Tiếng Trung</span></td>
+                <td style="text-align: right; font-family: 'IBM Plex Mono', monospace">0.89</td>
+                <td><span style="font-family: 'IBM Plex Mono', monospace">vi</span> <span style="color: #5A5A57">· 12%</span></td>
+                <td><span style="display: inline-flex; padding: 2px 10px; border-radius: 999px; background: #E6EFE3; color: #2B5A25; font-size: 12px; font-weight: 500">OK</span></td>
+              </tr>
+              <tr>
+                <td style="color: #5A5A57">Doi_tac_B</td>
+                <td style="font-family: 'IBM Plex Mono', monospace">promo_08.mp3</td>
+                <td style="text-align: right; font-family: 'IBM Plex Mono', monospace">04:40</td>
+                <td><span style="font-family: 'IBM Plex Mono', monospace; font-weight: 500">vi</span> <span style="color: #5A5A57">Tiếng Việt</span></td>
+                <td style="text-align: right; font-family: 'IBM Plex Mono', monospace">0.95</td>
+                <td style="color: #5A5A57">—</td>
+                <td><span style="display: inline-flex; padding: 2px 10px; border-radius: 999px; background: #E6EFE3; color: #2B5A25; font-size: 12px; font-weight: 500">OK</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; color: #5A5A57">
+          <span>Hiển thị 1–8 / 187 clip</span>
+          <div style="display: flex; align-items: center; gap: 6px">
+            <button type="button" aria-label="Trang trước" style="width: 44px; height: 44px; border: 1px solid #C2C2BD; border-radius: 8px; background: #FFFFFF; color: #1A1A1A; font: inherit; cursor: pointer">‹</button>
+            <span style="font-family: 'IBM Plex Mono', monospace; color: #1A1A1A">1 / 24</span>
+            <button type="button" aria-label="Trang sau" style="width: 44px; height: 44px; border: 1px solid #C2C2BD; border-radius: 8px; background: #FFFFFF; color: #1A1A1A; font: inherit; cursor: pointer">›</button>
+          </div>
+        </div>
+      </section>
+
+      <div style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+        <section aria-labelledby="h-dist" style="background: #FFFFFF; border: 1px solid #D4D4CF; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
+          <div>
+            <h2 id="h-dist" style="margin: 0; font-size: 16px; font-weight: 600">Phân bố ngôn ngữ chính</h2>
+            <p style="margin: 2px 0 0; font-size: 12px; color: #5A5A57">180 clip có nhãn (OK + Cần xem lại)</p>
+          </div>
+          <div style="display: grid; grid-template-columns: 34px minmax(0, 1fr) 72px; align-items: center; gap: 8px 10px">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-weight: 500">vi</span>
+            <div style="height: 10px; background: #F0F0EC; border-radius: 999px; overflow: hidden"><div style="width: 100%; height: 100%; background: #1F4FBF"></div></div>
+            <span style="text-align: right; font-family: 'IBM Plex Mono', monospace; font-size: 13px">133 · 74%</span>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-weight: 500">en</span>
+            <div style="height: 10px; background: #F0F0EC; border-radius: 999px; overflow: hidden"><div style="width: 25%; height: 100%; background: #1F4FBF"></div></div>
+            <span style="text-align: right; font-family: 'IBM Plex Mono', monospace; font-size: 13px">33 · 18%</span>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-weight: 500">zh</span>
+            <div style="height: 10px; background: #F0F0EC; border-radius: 999px; overflow: hidden"><div style="width: 7%; height: 100%; background: #1F4FBF"></div></div>
+            <span style="text-align: right; font-family: 'IBM Plex Mono', monospace; font-size: 13px">9 · 5%</span>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-weight: 500">th</span>
+            <div style="height: 10px; background: #F0F0EC; border-radius: 999px; overflow: hidden"><div style="width: 4%; height: 100%; background: #1F4FBF"></div></div>
+            <span style="text-align: right; font-family: 'IBM Plex Mono', monospace; font-size: 13px">5 · 3%</span>
+          </div>
+        </section>
+
+        <section aria-labelledby="h-detail" style="background: #FFFFFF; border: 1px solid #D4D4CF; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+          <div>
+            <h2 id="h-detail" style="margin: 0; font-size: 16px; font-weight: 600; font-family: 'IBM Plex Mono', monospace">spot_002.wav</h2>
+            <p style="margin: 2px 0 0; font-size: 12px; color: #5A5A57; font-family: 'IBM Plex Mono', monospace; word-break: break-all">/Volumes/Data/Ads/2026-T09/spot_002.wav</p>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px 20px">
+            <div><div style="font-size: 12px; color: #5A5A57">Ngôn ngữ chính</div><div style="font-weight: 600"><span style="font-family: 'IBM Plex Mono', monospace">vi</span> Tiếng Việt</div></div>
+            <div><div style="font-size: 12px; color: #5A5A57">Tin cậy</div><div style="font-weight: 600; font-family: 'IBM Plex Mono', monospace">0.81</div></div>
+            <div><div style="font-size: 12px; color: #5A5A57">Giọng nói</div><div style="font-weight: 600; font-family: 'IBM Plex Mono', monospace">4:23 / 5:10</div></div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <div style="font-size: 12px; color: #5A5A57">Dòng thời gian theo đoạn</div>
+            <div role="img" aria-label="Dòng thời gian: nhạc 0:00–0:12, vi 0:12–1:20, en 1:20–1:42, vi 1:42–3:10, nhạc 3:10–3:35, vi 3:35–4:24, en 4:24–5:00, nhạc 5:00–5:10" style="display: flex; height: 28px; border-radius: 6px; overflow: hidden; gap: 1px; background: #FFFFFF">
+              <div style="width: 3.9%; background: #D4D4CF"></div>
+              <div style="width: 21.9%; background: #1F4FBF"></div>
+              <div style="width: 7.1%; background: #E08A2E"></div>
+              <div style="width: 28.4%; background: #1F4FBF"></div>
+              <div style="width: 8.1%; background: #D4D4CF"></div>
+              <div style="width: 15.8%; background: #1F4FBF"></div>
+              <div style="width: 11.6%; background: #E08A2E"></div>
+              <div style="width: 3.2%; background: #D4D4CF"></div>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 12px; color: #5A5A57; font-family: 'IBM Plex Mono', monospace"><span>0:00</span><span>2:35</span><span>5:10</span></div>
+            <div style="display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; color: #4A4A47">
+              <span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 2px; background: #1F4FBF"></span>vi · 78%</span>
+              <span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 2px; background: #E08A2E"></span>en · 22%</span>
+              <span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 2px; background: #D4D4CF"></span>không có giọng nói</span>
+            </div>
+          </div>
+          <p style="margin: 0; font-size: 12px; color: #5A5A57">27 đoạn được phân tích · 2 đoạn bị bỏ vì ngắn hơn 2 giây</p>
+          <button type="button" style="height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid #C2C2BD; background: #FFFFFF; color: #1A1A1A; font: inherit; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>Mở vị trí file</button>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1120}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Export kết quả</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#1F4FBF}a:hover{color:#163A8F}
+</style>
+</helmet>
+<div style="background: #F2F2EF; color: #1A1A1A; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14px; line-height: 1.45; min-height: 100vh">
+  <header style="background: #FFFFFF; border-bottom: 1px solid #D4D4CF">
+    <div style="max-width: 1280px; margin: 0 auto; padding: 8px 24px; box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px">
+      <div style="display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 15px">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 12h2M7 8v8M11 5v14M15 9v6M19 11v2"></path></svg>
+        <span>LangID Batch</span>
+      </div>
+      <nav aria-label="Các bước" style="display: flex; flex-wrap: wrap; gap: 4px; flex: 1 1 auto">
+        <a href="Main.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; border-radius: 8px; color: #5A5A57; text-decoration: none"><span style="display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; border: 1px solid currentColor; font-size: 12px">1</span>Chọn thư mục</a>
+        <a href="Processing.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; border-radius: 8px; color: #5A5A57; text-decoration: none"><span style="display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; border: 1px solid currentColor; font-size: 12px">2</span>Nhận diện</a>
+        <a href="Results.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; border-radius: 8px; color: #5A5A57; text-decoration: none"><span style="display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; border: 1px solid currentColor; font-size: 12px">3</span>Kết quả</a>
+        <a href="Export.dc.html" aria-current="page" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; border-radius: 8px; background: #E3EAF8; color: #1F4FBF; font-weight: 600; text-decoration: none"><span style="display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; border: 1px solid currentColor; font-size: 12px">4</span>Export</a>
+      </nav>
+      <span style="display: inline-flex; align-items: center; padding: 6px 10px; border: 1px solid #D4D4CF; border-radius: 999px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5A5A57">speechbrain · voxlingua107-ecapa</span>
+    </div>
+  </header>
+
+  <main style="max-width: 1280px; margin: 0 auto; padding: 24px; box-sizing: border-box; display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+    <section aria-labelledby="h-export" style="flex: 1 1 380px; min-width: 0; background: #FFFFFF; border: 1px solid #D4D4CF; border-radius: 12px; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px">
+      <h1 id="h-export" style="margin: 0; font-size: 20px; font-weight: 600">Export kết quả</h1>
+
+      <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px">
+        <legend style="padding: 0; margin-bottom: 8px; font-weight: 500">Định dạng</legend>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+          <label style="display: flex; gap: 10px; align-items: flex-start; padding: 14px; border: 2px solid #1F4FBF; border-radius: 10px; background: #F5F8FE; cursor: pointer">
+            <input type="radio" name="fmt" checked style="margin-top: 3px; width: 18px; height: 18px; accent-color: #1F4FBF">
+            <span><span style="display: block; font-weight: 600; font-family: 'IBM Plex Mono', monospace">JSON</span><span style="display: block; font-size: 12px; color: #5A5A57">Có cấu trúc, gồm tỉ lệ từng ngôn ngữ; tuỳ chọn chi tiết từng đoạn.</span></span>
+          </label>
+          <label style="display: flex; gap: 10px; align-items: flex-start; padding: 14px; border: 1px solid #C2C2BD; border-radius: 10px; background: #FFFFFF; cursor: pointer">
+            <input type="radio" name="fmt" style="margin-top: 3px; width: 18px; height: 18px; accent-color: #1F4FBF">
+            <span><span style="display: block; font-weight: 600; font-family: 'IBM Plex Mono', monospace">CSV</span><span style="display: block; font-size: 12px; color: #5A5A57">Mỗi clip một dòng; mở bằng Excel, Numbers, Google Sheets.</span></span>
+          </label>
+        </div>
+      </fieldset>
+
+      <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px">
+        <legend style="padding: 0; margin-bottom: 6px; font-weight: 500">Phạm vi</legend>
+        <label style="display: flex; align-items: center; gap: 10px; min-height: 44px; cursor: pointer"><input type="radio" name="scope" checked style="width: 18px; height: 18px; accent-color: #1F4FBF">Tất cả clip <span style="color: #5A5A57">(187)</span></label>
+        <label style="display: flex; align-items: center; gap: 10px; min-height: 44px; cursor: pointer"><input type="radio" name="scope" style="width: 18px; height: 18px; accent-color: #1F4FBF">Theo bộ lọc đang áp dụng ở màn Kết quả</label>
+        <label style="display: flex; align-items: center; gap: 10px; min-height: 44px; cursor: pointer"><input type="radio" name="scope" style="width: 18px; height: 18px; accent-color: #1F4FBF">Chỉ các thư mục được chọn</label>
+        <div style="display: flex; flex-wrap: wrap; gap: 4px 16px; padding-left: 28px; color: #5A5A57">
+          <label style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px"><input type="checkbox" disabled style="width: 16px; height: 16px">2026-T09</label>
+          <label style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px"><input type="checkbox" disabled style="width: 16px; height: 16px">Doi_tac_A</label>
+          <label style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px"><input type="checkbox" disabled style="width: 16px; height: 16px">Doi_tac_B</label>
+        </div>
+      </fieldset>
+
+      <fieldset style="border: 0; margin: 0; padding: 0">
+        <legend style="padding: 0; margin-bottom: 6px; font-weight: 500">Trường dữ liệu</legend>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 12px">
+          <label style="display: flex; align-items: center; gap: 10px; min-height: 44px"><input type="checkbox" checked style="width: 18px; height: 18px; accent-color: #1F4FBF">Thư mục</label>
+          <label style="display: flex; align-items: center; gap: 10px; min-height: 44px"><input type="checkbox" checked style="width: 18px; height: 18px; accent-color: #1F4FBF">Tên file</label>
+          <label style="display: flex; align-items: center; gap: 10px; min-height: 44px"><input type="checkbox" checked style="width: 18px; height: 18px; accent-color: #1F4FBF">Thời lượng (giây)</label>
+          <label style="display: flex; align-items: center; gap: 10px; min-height: 44px"><input type="checkbox" checked style="width: 18px; height: 18px; accent-color: #1F4FBF">Ngôn ngữ chính</label>
+          <label style="display: flex; align-items: center; gap: 10px; min-height: 44px"><input type="checkbox" checked style="width: 18px; height: 18px; accent-color: #1F4FBF">Độ tin cậy</label>
+          <label style="display: flex; align-items: center; gap: 10px; min-height: 44px"><input type="checkbox" checked style="width: 18px; height: 18px; accent-color: #1F4FBF">Ngôn ngữ phụ + tỉ lệ</label>
+          <label style="display: flex; align-items: center; gap: 10px; min-height: 44px"><input type="checkbox" checked style="width: 18px; height: 18px; accent-color: #1F4FBF">Trạng thái</label>
+          <label style="display: flex; align-items: center; gap: 10px; min-height: 44px"><input type="checkbox" style="width: 18px; height: 18px; accent-color: #1F4FBF">Chi tiết từng đoạn <span style="color: #5A5A57">(chỉ JSON)</span></label>
+        </div>
+      </fieldset>
+
+      <label style="display: flex; align-items: flex-start; gap: 10px; padding: 12px; border: 1px solid #E4E4E0; border-radius: 8px; background: #FAFAF8; cursor: pointer">
+        <input type="checkbox" checked style="margin-top: 2px; width: 18px; height: 18px; accent-color: #1F4FBF">
+        <span><span style="display: block; font-weight: 500">CSV: ghi UTF-8 có BOM</span><span style="display: block; font-size: 12px; color: #5A5A57">Để Excel trên Windows hiển thị đúng tên thư mục, tên file tiếng Việt.</span></span>
+      </label>
+
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <label for="out-path" style="font-weight: 500">Lưu vào</label>
+        <div style="display: flex; gap: 8px">
+          <input id="out-path" type="text" value="/Volumes/Data/Ads/langid_2026-10-19.json" style="flex: 1 1 auto; min-width: 0; height: 44px; box-sizing: border-box; padding: 0 10px; border: 1px solid #C2C2BD; border-radius: 8px; font: inherit; font-family: 'IBM Plex Mono', monospace; font-size: 13px; background: #FFFFFF; color: #1A1A1A">
+          <button type="button" style="height: 44px; padding: 0 14px; border-radius: 8px; border: 1px solid #C2C2BD; background: #FFFFFF; color: #1A1A1A; font: inherit; font-weight: 500; cursor: pointer">Chọn…</button>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; border-top: 1px solid #E4E4E0; padding-top: 16px">
+        <a href="Results.dc.html" style="display: inline-flex; align-items: center; height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid #C2C2BD; color: #1A1A1A; font-weight: 500; text-decoration: none">Quay lại kết quả</a>
+        <button type="button" style="height: 44px; padding: 0 18px; border-radius: 8px; border: 1px solid #1F4FBF; background: #1F4FBF; color: #FFFFFF; font: inherit; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"></path></svg>Export JSON</button>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-preview" style="flex: 999 1 520px; min-width: 0; background: #FFFFFF; border: 1px solid #D4D4CF; border-radius: 12px; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px">
+      <div>
+        <h2 id="h-preview" style="margin: 0; font-size: 16px; font-weight: 600">Xem trước</h2>
+        <p style="margin: 2px 0 0; font-size: 12px; color: #5A5A57">Vài clip đầu theo thiết lập hiện tại</p>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <div style="font-size: 12px; font-weight: 500; color: #5A5A57; font-family: 'IBM Plex Mono', monospace">langid_2026-10-19.json</div>
+        <pre style="margin: 0; padding: 16px; background: #F7F7F4; border: 1px solid #E4E4E0; border-radius: 8px; overflow-x: auto; white-space: pre; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; line-height: 1.55; color: #1A1A1A">{
+  "generated_at": "2026-10-19T12:10:31+07:00",
+  "model": "speechbrain/lang-id-voxlingua107-ecapa",
+  "settings": { "segment_s": 10, "min_segment_s": 2, "min_confidence": 0.6 },
+  "summary": { "total": 187, "ok": 171, "review": 9, "no_speech": 5, "error": 2 },
+  "clips": [
+    {
+      "folder": "/Volumes/Data/Ads/2026-T09",
+      "file": "spot_002.wav",
+      "duration_s": 310.4,
+      "language": "vi",
+      "confidence": 0.81,
+      "languages": { "vi": 0.78, "en": 0.22 },
+      "status": "ok"
+    },
+    {
+      "folder": "/Volumes/Data/Ads/Doi_tac_A",
+      "file": "spot_018.mp3",
+      "duration_s": null,
+      "language": null,
+      "confidence": null,
+      "languages": { },
+      "status": "error",
+      "error": "cannot decode audio"
+    }
+  ]
+}</pre>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <div style="font-size: 12px; font-weight: 500; color: #5A5A57; font-family: 'IBM Plex Mono', monospace">langid_2026-10-19.csv <span style="font-family: 'IBM Plex Sans', system-ui, sans-serif; font-weight: 400">— khi chọn CSV</span></div>
+        <pre style="margin: 0; padding: 16px; background: #F7F7F4; border: 1px solid #E4E4E0; border-radius: 8px; overflow-x: auto; white-space: pre; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; line-height: 1.55; color: #1A1A1A">folder,file,duration_s,language,confidence,secondary_language,secondary_share,status
+/Volumes/Data/Ads/2026-T09,spot_001.mp3,292.0,vi,0.97,,,ok
+/Volumes/Data/Ads/2026-T09,spot_002.wav,310.4,vi,0.81,en,0.22,ok
+/Volumes/Data/Ads/Doi_tac_A,spot_019.m4a,302.1,vi,0.58,th,0.31,review
+/Volumes/Data/Ads/Doi_tac_A,spot_020.mp3,298.5,,,,,no_speech
+/Volumes/Data/Ads/Doi_tac_A,spot_018.mp3,,,,,,error</pre>
+      </div>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1120}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>
